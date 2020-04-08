@@ -1,0 +1,7 @@
+venv/
+.mypy_cache/
+.vscode/
+*.csv
+*.pyc
+*.db
+*.xml
