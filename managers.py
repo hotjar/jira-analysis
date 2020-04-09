@@ -1,7 +1,43 @@
-from typing import Optional
+from operator import attrgetter
+from typing import Any, Dict, List, Optional, Tuple
 
-from entities import JiraTicket, get_ticket_status
+from entities import (
+    JiraTicket,
+    JiraWorkLog,
+    get_ticket_status,
+    get_with_updated_work_log,
+)
 from models import Ticket, TicketUpdate
+
+
+def get_all_jira_tickets(session) -> List[JiraTicket]:
+    result = (
+        session.query(Ticket, TicketUpdate)
+        .filter(Ticket.id == TicketUpdate.ticket_id)
+        .order_by(Ticket.key, TicketUpdate.updated)
+    )
+
+    tickets: Dict[Any, JiraTicket] = {}
+    for ticket, ticket_update in result:
+        jira_ticket = tickets.get(
+            ticket.id,
+            JiraTicket(
+                id=ticket.id,
+                key=ticket.key,
+                status=get_ticket_status(ticket_update.status),
+                updated=ticket_update.updated,
+                description=ticket.description,
+                ticket_log=[],
+            ),
+        )
+        work_log = JiraWorkLog(
+            id=ticket_update.id,
+            updated=ticket_update.updated,
+            status=get_ticket_status(ticket_update.status),
+        )
+
+        tickets[jira_ticket.id] = get_with_updated_work_log(jira_ticket, work_log)
+    return list(sorted(tickets.values(), key=attrgetter("key")))
 
 
 def get_jira_ticket_from_key(key: str, session) -> Optional[JiraTicket]:
@@ -9,19 +45,32 @@ def get_jira_ticket_from_key(key: str, session) -> Optional[JiraTicket]:
     """
     result = (
         session.query(Ticket, TicketUpdate)
-        .filter(Ticket.key == key)
-        .order_by(TicketUpdate.updated.desc())
-        .first()
+        .filter(Ticket.key == key, Ticket.id == TicketUpdate.ticket_id)
+        .order_by(TicketUpdate.updated)
     )
 
-    if result is not None:
-        ticket, ticket_update = result
+    base_ticket = None
+    work_tickets = []
+    for ticket, ticket_update in result:
+        if base_ticket is None:
+            base_ticket = ticket
+
+        work_tickets.append(
+            JiraWorkLog(
+                id=ticket_update.id,
+                status=get_ticket_status(ticket_update.status),
+                updated=ticket_update.updated,
+            )
+        )
+    if base_ticket is not None:
+        last_ticket = work_tickets[-1]
         return JiraTicket(
-            id=ticket.id,
-            key=ticket.key,
-            status=get_ticket_status(ticket_update.status),
-            updated=ticket_update.updated,
-            description=ticket.description,
+            id=base_ticket.id,
+            key=base_ticket.key,
+            status=last_ticket.status,
+            updated=last_ticket.updated,
+            description=base_ticket.description,
+            ticket_log=work_tickets,
         )
     return None
 
@@ -31,20 +80,15 @@ def persist_jira_ticket(jira_ticket: JiraTicket, session) -> None:
 
     If nothing changed, this does nothing.
     """
-    ticket = Ticket(key=jira_ticket.key, description=jira_ticket.description)
-    ticket_update = TicketUpdate(
-        ticket=ticket, status=jira_ticket.status.value, updated=jira_ticket.updated,
-    )
-
     if jira_ticket.id is None:
-        session.add_all([ticket, ticket_update])
+        ticket = Ticket(key=jira_ticket.key, description=jira_ticket.description)
+        session.add(ticket)
     else:
-        ticket_update = (
-            session.query(TicketUpdate)
-            .filter(TicketUpdate.ticket_id == jira_ticket.id)
-            .order_by(TicketUpdate.updated.desc())
-            .first()
-        )
+        ticket = session.query(Ticket).filter(Ticket.id == jira_ticket.id).one()
 
-        if ticket_update.updated != jira_ticket.updated:
+    for work_log in jira_ticket.ticket_log:
+        if work_log.id is None:
+            ticket_update = TicketUpdate(
+                ticket=ticket, updated=work_log.updated, status=work_log.status.value
+            )
             session.add(ticket_update)

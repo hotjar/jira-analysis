@@ -1,8 +1,7 @@
 from sqlalchemy import Column, Date, ForeignKey, Integer, String, UniqueConstraint
-from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
-Base = declarative_base()
+from database import Base
 
 
 class Ticket(Base):

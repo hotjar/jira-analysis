@@ -3,8 +3,9 @@ from os.path import dirname, join, realpath
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import Base
+from sqlalchemy.ext.declarative import declarative_base
 
+Base = declarative_base()
 
 CURRENT_DIR = dirname(realpath(__file__))
 ANALYSIS_FILE = "sqlite:///{}".format(join(CURRENT_DIR, "analysis.db"))
