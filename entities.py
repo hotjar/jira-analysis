@@ -5,11 +5,11 @@ from enum import Enum
 
 
 class TicketStatus(Enum):
-    TO_DO = 'To Do'
-    IN_PROGRESS = 'In Progress'
-    RUNNING = 'Running'
-    REVIEW = 'Review'
-    DONE = 'Done'
+    TO_DO = "To Do"
+    IN_PROGRESS = "In Progress"
+    RUNNING = "Running"
+    REVIEW = "Review"
+    DONE = "Done"
 
 
 WORK_COMPLETE_STATUSES = frozenset([TicketStatus.RUNNING, TicketStatus.DONE])

@@ -7,7 +7,7 @@ from models import Base
 
 
 CURRENT_DIR = dirname(realpath(__file__))
-ANALYSIS_FILE = 'sqlite:///{}'.format(join(CURRENT_DIR, 'analysis.db'))
+ANALYSIS_FILE = "sqlite:///{}".format(join(CURRENT_DIR, "analysis.db"))
 
 engine = create_engine(ANALYSIS_FILE)
 

@@ -1,6 +1,10 @@
 arrow
 attrs
 beautifulsoup4
+black
+flake8
 lxml
+mypy
 pip-tools
+pylint
 sqlalchemy
