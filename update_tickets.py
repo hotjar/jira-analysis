@@ -1,4 +1,5 @@
 import arrow
+import attr
 from bs4 import BeautifulSoup
 
 from database import get_session
@@ -28,6 +29,7 @@ for item in soup.find_all("item"):
             updated=arrow.get(updated, "ddd, D MMM YYYY H:mm:ss Z").date(),
             first_updated=arrow.get(updated, "ddd, D MMM YYYY H:mm:ss Z").date(),
         )
+        attr.validate(jira_ticket)
     else:
         jira_ticket = result
 

@@ -2,6 +2,7 @@ import attr
 
 from datetime import date
 from enum import Enum
+from typing import Optional
 
 
 class TicketStatus(Enum):
@@ -15,9 +16,9 @@ class TicketStatus(Enum):
 WORK_COMPLETE_STATUSES = frozenset([TicketStatus.RUNNING, TicketStatus.DONE])
 
 
-@attr.s
+@attr.s(frozen=True)
 class JiraTicket:
-    id = attr.ib(int)
+    id = attr.ib(Optional[int])
     description = attr.ib(str)
     key = attr.ib(str)
     status = attr.ib(TicketStatus)
