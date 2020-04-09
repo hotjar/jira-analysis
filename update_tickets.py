@@ -44,4 +44,6 @@ for item in soup.find_all("item"):
 
     updated_ticket = get_with_updated_work_log(jira_ticket, work_log)
     persist_jira_ticket(updated_ticket, session)
-    session.commit()
+
+session.commit()
+session.close()

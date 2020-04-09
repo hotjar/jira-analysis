@@ -4,6 +4,7 @@ from managers import get_all_jira_tickets
 
 session = get_session()
 tickets = get_all_jira_tickets(session)
+session.close()
 
 for ticket in tickets:
     print(len(ticket.ticket_log))
