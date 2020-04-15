@@ -10,7 +10,7 @@ astroid==2.3.3            # via pylint
 attrs==19.3.0             # via -r requirements.in, black
 beautifulsoup4==4.9.0     # via -r requirements.in
 black==19.10b0            # via -r requirements.in
-click==7.1.1              # via black, pip-tools
+click==7.1.1              # via -r requirements.in, black, pip-tools
 entrypoints==0.3          # via flake8
 flake8==3.7.9             # via -r requirements.in
 isort==4.3.21             # via pylint
@@ -19,7 +19,7 @@ lxml==4.5.0               # via -r requirements.in
 mccabe==0.6.1             # via flake8, pylint
 mypy-extensions==0.4.3    # via mypy
 mypy==0.770               # via -r requirements.in
-pathspec==0.7.0           # via black
+pathspec==0.8.0           # via black
 pip-tools==4.5.1          # via -r requirements.in
 pycodestyle==2.5.0        # via flake8
 pyflakes==2.1.1           # via flake8

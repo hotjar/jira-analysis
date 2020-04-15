@@ -2,6 +2,7 @@ arrow
 attrs
 beautifulsoup4
 black
+click
 flake8
 lxml
 mypy

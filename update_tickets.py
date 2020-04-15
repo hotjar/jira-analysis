@@ -11,39 +11,41 @@ from entities import (
 )
 from managers import get_jira_ticket_from_key, persist_jira_ticket
 
-with open("./on_jira_board_2.xml") as f:
-    soup = BeautifulSoup(f, "lxml")
+
+def load_from_file(file_handle):
+    return BeautifulSoup(file_handle, "lxml")
 
 
-session = get_session()
+def persist_to_database(soup):
+    session = get_session()
 
-for item in soup.find_all("item"):
-    key = item.key.text
-    status = item.status.text
-    description = item.description.text
-    updated = item.updated.text
+    for item in soup.find_all("item"):
+        key = item.key.text
+        status = item.status.text
+        description = item.description.text
+        updated = item.updated.text
 
-    result = get_jira_ticket_from_key(key, session)
+        result = get_jira_ticket_from_key(key, session)
 
-    work_log = JiraWorkLog(
-        status=get_ticket_status(status),
-        updated=arrow.get(updated, "ddd, D MMM YYYY H:mm:ss Z").date(),
-    )
-    attr.validate(work_log)
-    if result is None:
-        jira_ticket = JiraTicket(
-            key=key,
-            status=work_log.status,
-            description=description,
-            updated=work_log.updated,
-            ticket_log=[],
+        work_log = JiraWorkLog(
+            status=get_ticket_status(status),
+            updated=arrow.get(updated, "ddd, D MMM YYYY H:mm:ss Z").date(),
         )
-        attr.validate(jira_ticket)
-    else:
-        jira_ticket = result
+        attr.validate(work_log)
+        if result is None:
+            jira_ticket = JiraTicket(
+                key=key,
+                status=work_log.status,
+                description=description,
+                updated=work_log.updated,
+                ticket_log=[],
+            )
+            attr.validate(jira_ticket)
+        else:
+            jira_ticket = result
 
-    updated_ticket = get_with_updated_work_log(jira_ticket, work_log)
-    persist_jira_ticket(updated_ticket, session)
+        updated_ticket = get_with_updated_work_log(jira_ticket, work_log)
+        persist_jira_ticket(updated_ticket, session)
 
-session.commit()
-session.close()
+    session.commit()
+    session.close()
