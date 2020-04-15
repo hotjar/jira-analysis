@@ -32,6 +32,7 @@ def persist_to_database(soup):
             updated=arrow.get(updated, "ddd, D MMM YYYY H:mm:ss Z").date(),
         )
         attr.validate(work_log)
+
         if result is None:
             jira_ticket = JiraTicket(
                 key=key,

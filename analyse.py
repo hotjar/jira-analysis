@@ -9,10 +9,20 @@ def analyse():
     session.close()
 
     for ticket in tickets:
-        print(len(ticket.ticket_log))
         if len(ticket.ticket_log) > 1:
-            print(
-                "{t.key}: {cycle_time}".format(
-                    t=ticket, cycle_time=get_cycle_time(ticket)
-                )
-            )
+            if ticket.done:
+                cycle_time = get_cycle_time(ticket)
+                if cycle_time is not None:
+                    print(
+                        "{t.key}: {cycle_time}".format(
+                            t=ticket, cycle_time=get_cycle_time(ticket)
+                        )
+                    )
+                else:
+                    print(
+                        "{t.key}: {start.status} -> {t.status}".format(
+                            t=ticket, start=ticket.ticket_log[0]
+                        )
+                    )
+            else:
+                print("{t.key}: {t.status}".format(t=ticket))

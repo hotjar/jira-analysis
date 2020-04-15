@@ -1,6 +1,6 @@
 import click
 
-from analyse import analyse
+from analyse import analyse as run_analyse
 from update_tickets import load_from_file, persist_to_database
 
 
@@ -10,15 +10,15 @@ def cli():
 
 
 @cli.command()
-def analyse_tickets():
+def analyse():
     """Analyse the ticket data in the DB.
     """
-    analyse()
+    run_analyse()
 
 
 @cli.command()
 @click.argument("ticket_file", type=click.File())
-def load_tickets(ticket_file):
+def load(ticket_file):
     """Load tickets from the passed-in file.
     
     :param ticket_file: Path to the tickets to load (in XML format)
