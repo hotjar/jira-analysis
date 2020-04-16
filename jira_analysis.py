@@ -1,6 +1,6 @@
 import click
 
-from analyse import analyse as run_analyse
+from analyse import print_cycle_times, average_cycle_times
 from update_tickets import load_from_file, persist_to_database
 
 
@@ -13,7 +13,8 @@ def cli():
 def analyse():
     """Analyse the ticket data in the DB.
     """
-    run_analyse()
+    print_cycle_times()
+    average_cycle_times()
 
 
 @cli.command()
