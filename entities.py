@@ -1,9 +1,11 @@
 import attr
 
-from datetime import date, timedelta
+from datetime import date
 from enum import Enum
 from operator import attrgetter
 from typing import List, Optional
+
+from numpy import busday_count
 
 
 class TicketStatus(Enum):
@@ -81,7 +83,7 @@ def get_with_updated_work_log(
     )
 
 
-def get_cycle_time(jira_ticket: JiraTicket) -> Optional[timedelta]:
+def get_cycle_time(jira_ticket: JiraTicket) -> Optional[int]:
     if jira_ticket.done:
         in_progress = done = None
         for item in sorted(jira_ticket.ticket_log, key=attrgetter("updated")):
@@ -93,6 +95,6 @@ def get_cycle_time(jira_ticket: JiraTicket) -> Optional[timedelta]:
                 done = item
         if done is None or in_progress is None:
             return None
-        return done.updated - in_progress.updated
+        return busday_count(in_progress.updated, done.updated)
 
     return None

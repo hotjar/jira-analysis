@@ -9,9 +9,7 @@ def average_cycle_times():
     session.close()
 
     cycle_times = [get_cycle_time(ticket) for ticket in tickets if ticket.done]
-    cycle_times = [
-        cycle_time.days for cycle_time in cycle_times if cycle_time is not None
-    ]
+    cycle_times = [cycle_time for cycle_time in cycle_times if cycle_time is not None]
     print("Average cycle time: {} days".format(sum(cycle_times) / len(cycle_times)))
 
 

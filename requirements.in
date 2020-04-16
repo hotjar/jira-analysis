@@ -6,6 +6,7 @@ click
 flake8
 lxml
 mypy
+numpy
 pip-tools
 pylint
 sqlalchemy
