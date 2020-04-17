@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 import click
 
 from analyse import print_cycle_times, average_cycle_times
