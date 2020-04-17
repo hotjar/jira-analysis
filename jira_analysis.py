@@ -3,12 +3,17 @@
 import click
 
 from analyse import print_cycle_times, average_cycle_times
-from update_tickets import load_from_file, persist_to_database
+from update_tickets import load_from_file, persist_to_database, get_from_jira
 
 
 @click.group()
 def cli():
     click.echo("Starting")
+
+
+@cli.command()
+def from_jira():
+    get_from_jira()
 
 
 @cli.command()

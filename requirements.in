@@ -9,4 +9,6 @@ mypy
 numpy
 pip-tools
 pylint
+pyyaml
+requests
 sqlalchemy

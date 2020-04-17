@@ -10,6 +10,12 @@ from entities import (
     get_with_updated_work_log,
 )
 from managers import get_jira_ticket_from_key, persist_jira_ticket
+from jira.get_issue import get_issue
+
+
+def get_from_jira():
+    issue = get_issue("ATV-72")
+    print(issue)
 
 
 def load_from_file(file_handle):
