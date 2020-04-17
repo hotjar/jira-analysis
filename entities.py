@@ -95,6 +95,6 @@ def get_cycle_time(jira_ticket: JiraTicket) -> Optional[int]:
                 done = item
         if done is None or in_progress is None:
             return None
-        return busday_count(in_progress.updated, done.updated)
+        return int(busday_count(in_progress.updated, done.updated))
 
     return None

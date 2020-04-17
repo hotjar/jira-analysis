@@ -31,8 +31,7 @@ def print_cycle_times():
                 if cycle_time is not None:
                     print(
                         "{t.key}: {cycle_time}".format(
-                            t=ticket,
-                            cycle_time=timedelta(days=float(get_cycle_time(ticket))),
+                            t=ticket, cycle_time=timedelta(days=get_cycle_time(ticket)),
                         )
                     )
                 else:
