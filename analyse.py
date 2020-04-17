@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from database import get_session
 from entities import get_cycle_time
 from managers import get_all_jira_tickets
@@ -10,7 +12,11 @@ def average_cycle_times():
 
     cycle_times = [get_cycle_time(ticket) for ticket in tickets if ticket.done]
     cycle_times = [cycle_time for cycle_time in cycle_times if cycle_time is not None]
-    print("Average cycle time: {} days".format(sum(cycle_times) / len(cycle_times)))
+    print(
+        "Average cycle time: {}".format(
+            timedelta(days=sum(cycle_times) / len(cycle_times))
+        )
+    )
 
 
 def print_cycle_times():
@@ -25,7 +31,8 @@ def print_cycle_times():
                 if cycle_time is not None:
                     print(
                         "{t.key}: {cycle_time}".format(
-                            t=ticket, cycle_time=get_cycle_time(ticket)
+                            t=ticket,
+                            cycle_time=timedelta(days=float(get_cycle_time(ticket))),
                         )
                     )
                 else:
