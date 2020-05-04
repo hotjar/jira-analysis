@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import click
+from typing import Iterable, Set
 
 from analyse import print_cycle_times, average_cycle_times
 from update_tickets import load_from_file, persist_to_database, get_from_jira
@@ -12,7 +13,7 @@ def cli():
 
 
 @cli.command()
-def from_jira():
+def load_from_jira():
     get_from_jira()
 
 

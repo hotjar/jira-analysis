@@ -10,12 +10,27 @@ from entities import (
     get_with_updated_work_log,
 )
 from managers import get_jira_ticket_from_key, persist_jira_ticket
-from jira.get_issue import get_issue
+from jira.network import get_issues, get_project
 
 
-def get_from_jira():
-    issue = get_issue("ATV-72")
-    print(issue)
+def get_from_jira(project_key: str):
+    project = get_project(project_key)
+    issues = get_issues(project)
+    session = get_session()
+
+    for issue in issues:
+        jira_ticket = JiraTicket(
+            key=issue.key,
+            status=issue.status,
+            description=issue.description,
+            updated=issue.updated,
+            ticket_log=[
+                JiraWorkLog(status=get_ticket_status(cl.status_to), updated=cl.updated)
+                for cl in issue.changelog
+            ],
+        )
+        persist_jira_ticket(jira_ticket, session)
+    session.commit()
 
 
 def load_from_file(file_handle):

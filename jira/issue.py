@@ -1,14 +1,14 @@
 import arrow
 import attr
 
-from typing import List, TypeVar, Type
+from typing import Any, Dict, List, TypeVar, Type
 from datetime import datetime
 
 T = TypeVar("T", bound="Parent")
 
 
 @attr.s
-class Changelog:
+class StatusChange:
     created: datetime = attr.ib()
     status_from: str = attr.ib()
     status_to: str = attr.ib()
@@ -21,17 +21,17 @@ class JiraTicket:
     updated: datetime = attr.ib()
 
     status: str = attr.ib()
-    changelog: List[Changelog] = attr.ib()
+    changelog: List[StatusChange] = attr.ib()
 
     @classmethod
-    def from_jira_ticket(cls: Type[T], ticket_dict: dict) -> T:
+    def from_jira_ticket(cls: Type[T], ticket_dict: Dict[str, Dict[str, Any]]) -> T:
         changelog = []
         for item in ticket_dict["changelog"]["histories"]:
             log = item["items"][0]
             if log["field"] != "status":
                 continue
             changelog.append(
-                Changelog(
+                StatusChange(
                     created=arrow.get(item["created"]).datetime,
                     status_from=log["fromString"],
                     status_to=log["toString"],
