@@ -8,6 +8,8 @@ from analyse import print_cycle_times, average_cycle_times
 from file_handlers import json
 from update_tickets import load_from_file, persist_to_database, get_from_jira
 
+from jira.issue import JiraTicket
+
 
 @click.group()
 def cli():
@@ -31,6 +33,14 @@ def fetch_tickets(project: str, source: str, file_out):
 
 
 @cli.command()
+@click.argument("file_in", type=click.File())
+def analyse(file_in):
+    data = json.load(file_in)
+    tickets = [JiraTicket.from_json(t) for t in data]
+    print(tickets[0])
+
+
+@cli.command()
 @click.argument("project", type=str)
 @click.option("-s", "source", type=click.Choice(["jira", "file"]), default="jira")
 def analyse_tickets(project: str, source: str):
@@ -42,14 +52,6 @@ def analyse_tickets(project: str, source: str):
     tickets = get_from_jira(project.upper())
     print_cycle_times(tickets)
     average_cycle_times(tickets)
-
-
-@cli.command()
-def analyse():
-    """Analyse the ticket data in the DB.
-    """
-    print_cycle_times()
-    average_cycle_times()
 
 
 @cli.command()

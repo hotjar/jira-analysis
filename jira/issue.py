@@ -50,6 +50,24 @@ class JiraTicket:
             changelog=changelog,
         )
 
+    @classmethod
+    def from_json(cls: Type[T], ticket_dict: Dict[str, Any]) -> T:
+        return cls(
+            key=ticket_dict["key"],
+            created=arrow.get(ticket_dict["created"]).datetime,
+            updated=arrow.get(ticket_dict["updated"]).datetime,
+            description=ticket_dict["description"],
+            status=ticket_dict["status"],
+            changelog=[
+                StatusChange(
+                    created=cl["created"],
+                    status_from=cl["status_from"],
+                    status_to=cl["status_to"],
+                )
+                for cl in ticket_dict["changelog"]
+            ],
+        )
+
 
 def _parse_description(doc: Dict[str, str]) -> str:
     if doc["type"] == "doc":
