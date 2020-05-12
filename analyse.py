@@ -1,15 +1,12 @@
 from datetime import timedelta
+from typing import Iterable
 
 from database import get_session
-from entities import get_cycle_time
+from entities import JiraTicket, get_cycle_time
 from managers import get_all_jira_tickets
 
 
-def average_cycle_times():
-    session = get_session()
-    tickets = get_all_jira_tickets(session)
-    session.close()
-
+def average_cycle_times(tickets: Iterable[JiraTicket]) -> None:
     cycle_times = [get_cycle_time(ticket) for ticket in tickets if ticket.done]
     cycle_times = [cycle_time for cycle_time in cycle_times if cycle_time is not None]
     print(
@@ -19,11 +16,7 @@ def average_cycle_times():
     )
 
 
-def print_cycle_times():
-    session = get_session()
-    tickets = get_all_jira_tickets(session)
-    session.close()
-
+def print_cycle_times(tickets: Iterable[JiraTicket]) -> None:
     for ticket in tickets:
         if len(ticket.ticket_log) > 1:
             if ticket.done:

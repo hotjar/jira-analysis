@@ -2,6 +2,7 @@ arrow
 attrs
 beautifulsoup4
 black
+bokeh
 click
 flake8
 lxml
