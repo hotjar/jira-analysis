@@ -38,6 +38,7 @@ regex==2020.5.7           # via black
 requests==2.23.0          # via -r requirements.in
 six==1.14.0               # via astroid, packaging, pip-tools, python-dateutil
 toml==0.10.0              # via black, pylint
+toolz==0.10.0             # via -r requirements.in
 tornado==6.0.4            # via bokeh
 typed-ast==1.4.1          # via astroid, black, mypy
 typing-extensions==3.7.4.2  # via bokeh, mypy

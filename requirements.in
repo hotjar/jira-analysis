@@ -10,3 +10,4 @@ pip-tools
 pylint
 pyyaml
 requests
+toolz

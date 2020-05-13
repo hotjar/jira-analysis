@@ -4,9 +4,10 @@ from arrow import Arrow
 from bokeh.plotting import figure, output_file, show
 from datetime import date, datetime, timedelta
 from enum import Enum
-from numpy import busday_count
+from numpy import busday_count, mean
 from operator import attrgetter
 from typing import List, Optional
+from toolz import itertoolz as it
 
 from .issue import Issue
 
@@ -34,7 +35,23 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         ],
     )
     p.circle(
-        [c.date() for c in completions], cycle_times, size=5, color="red", alpha=0.9,
+        [c.date() for c in completions], cycle_times, size=5, color="blue", alpha=0.7,
+    )
+    p.line(
+        [c.date() for c in completions],
+        mean(cycle_times),
+        line_width=1,
+        name="Average cycle time",
+        color="red",
+        alpha=0.8,
+    )
+    p.line(
+        [c.date() for c in completions],
+        sliding_cycle_time(cycle_times),
+        line_width=1,
+        name="Cycle time sliding window",
+        color="green",
+        alpha=0.9,
     )
     show(p)
 
@@ -44,3 +61,8 @@ def get_cycle_time(ticket: Issue) -> Optional[int]:
         return None
 
     return busday_count(ticket.started.date(), ticket.completed.date())
+
+
+def sliding_cycle_time(cycle_times: List[int]) -> List[float]:
+    cycle_window = [mean(window) for window in it.sliding_window(3, cycle_times)]
+    return [cycle_window[0], cycle_window[0]] + cycle_window
