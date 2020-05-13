@@ -1,7 +1,7 @@
 import arrow
 import attr
 
-from typing import Any, Dict, List, TypeVar, Type
+from typing import Any, Dict, List, Optional, TypeVar, Type
 from datetime import datetime
 
 T = TypeVar("T", bound="Parent")
@@ -60,7 +60,7 @@ class JiraTicket:
             status=ticket_dict["status"],
             changelog=[
                 StatusChange(
-                    created=cl["created"],
+                    created=arrow.get(cl["created"]).datetime,
                     status_from=cl["status_from"],
                     status_to=cl["status_to"],
                 )

@@ -5,4 +5,6 @@ venv/
 *.pyc
 *.db
 *.xml
+*.json
+*.html
 credentials.yaml

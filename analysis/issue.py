@@ -2,25 +2,26 @@ import attr
 
 from datetime import datetime
 from enum import Enum
+from typing import Optional
 
 
 class TicketStatus(Enum):
+    BACKLOG = "Backlog"
     TO_DO = "To Do"
     IN_PROGRESS = "In Progress"
     RUNNING = "Running"
+    BLOCKED = "Blocked"
+    READY_FOR_REVIEW = "Ready for Review"
     REVIEW = "Review"
+    IN_REVIEW = "In Review"
     DONE = "Done"
-
-
-_WORK_COMPLETE_STATUSES = frozenset([TicketStatus.RUNNING, TicketStatus.DONE])
-_WORK_IN_PROGRESS_STATUSES = frozenset([TicketStatus.IN_PROGRESS, TicketStatus.REVIEW])
 
 
 @attr.s(frozen=True)
 class Issue:
     key: str = attr.ib()
     created: datetime = attr.ib()
-    completed: datetime = attr.ib()
+    completed: Optional[datetime] = attr.ib()
+    started: Optional[datetime] = attr.ib()
 
     status: TicketStatus = attr.ib()
-    done: bool = attr.ib()
