@@ -1,15 +1,12 @@
 arrow
 attrs
-beautifulsoup4
 black
 bokeh
 click
 flake8
-lxml
 mypy
 numpy
 pip-tools
 pylint
 pyyaml
 requests
-sqlalchemy
