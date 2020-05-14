@@ -8,3 +8,4 @@ venv/
 *.json
 *.html
 credentials.yaml
+config.yaml

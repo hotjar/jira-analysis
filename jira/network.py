@@ -3,7 +3,7 @@ import requests
 from typing import List
 from urllib.parse import urlencode, urljoin
 
-from .auth import get_config
+from .auth import JiraConfig
 from .issue import StatusChange, JiraTicket
 from .project import JiraProject
 
@@ -11,9 +11,8 @@ from .project import JiraProject
 _JIRA_URL_BASE = "https://hotjar.atlassian.net/rest/api/3/"
 
 
-def get_issues(project: JiraProject) -> List[JiraTicket]:
+def get_issues(config: JiraConfig, project: JiraProject) -> List[JiraTicket]:
     issues = []
-    config = get_config("./credentials.yaml")
     jira_url = urljoin(_JIRA_URL_BASE, "search")
     query = urlencode({"jql": "project={}".format(project.key), "expand": "changelog"})
     response = requests.get("{}?{}".format(jira_url, query), auth=attr.astuple(config))
@@ -40,8 +39,7 @@ def get_issues(project: JiraProject) -> List[JiraTicket]:
     return issues
 
 
-def get_project(key: str) -> JiraProject:
-    config = get_config("./credentials.yaml")
+def get_project(config: JiraConfig, key: str) -> JiraProject:
     response = requests.get(
         "https://hotjar.atlassian.net/rest/api/3/project/{key}".format(key=key),
         auth=attr.astuple(config),
@@ -49,8 +47,7 @@ def get_project(key: str) -> JiraProject:
     return JiraProject.from_jira_project(response.json())
 
 
-def get_issue(key: str) -> JiraTicket:
-    config = get_config("./credentials.yaml")
+def get_issue(config: JiraConfig, key: str) -> JiraTicket:
     response = requests.get(
         "https://hotjar.atlassian.net/rest/api/3/issue/{key}?expand=changelog".format(
             key=key
