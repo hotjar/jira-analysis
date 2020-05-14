@@ -28,16 +28,16 @@ class JiraTicket:
     def from_jira_ticket(cls: Type[T], ticket_dict: Dict[str, Dict[str, Any]]) -> T:
         changelog = []
         for item in ticket_dict["changelog"]["histories"]:
-            log = item["items"][0]
-            if log["field"] != "status":
-                continue
-            changelog.append(
-                StatusChange(
-                    created=arrow.get(item["created"]).datetime,
-                    status_from=log["fromString"],
-                    status_to=log["toString"],
+            for log in item["items"]:
+                if log["field"] != "status":
+                    continue
+                changelog.append(
+                    StatusChange(
+                        created=arrow.get(item["created"]).datetime,
+                        status_from=log["fromString"],
+                        status_to=log["toString"],
+                    )
                 )
-            )
 
         return cls(
             key=ticket_dict["key"],
