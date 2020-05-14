@@ -47,7 +47,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     )
     p.line(
         [c.date() for c in completions],
-        sliding_cycle_time(cycle_times),
+        rolling_average_cycle_time(cycle_times),
         line_width=1,
         name="Cycle time sliding window",
         color="green",
@@ -63,6 +63,6 @@ def get_cycle_time(ticket: Issue) -> Optional[int]:
     return busday_count(ticket.started.date(), ticket.completed.date())
 
 
-def sliding_cycle_time(cycle_times: List[int]) -> List[float]:
-    cycle_window = [mean(window) for window in it.sliding_window(3, cycle_times)]
+def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
+    cycle_window = [mean(window) for window in it.sliding_window(5, cycle_times)]
     return [cycle_window[0], cycle_window[0]] + cycle_window

@@ -8,6 +8,7 @@ from analysis.ticket_control import generate_control_chart
 from conversions.analysis import convert_jira_to_analysis
 from file_handlers import json
 from jira.issue import JiraTicket
+from jira.network import get_issues
 
 
 @click.group()
@@ -22,7 +23,7 @@ def cli():
 def fetch_tickets(project: str, source: str, file_out):
     """Fetch the tickets and save them as a JSON file.
     """
-    tickets = get_from_jira(project.upper())
+    tickets = get_issues(project.upper())
     json.dump([attr.asdict(ticket) for ticket in tickets], file_out)
 
 
