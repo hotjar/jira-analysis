@@ -59,6 +59,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     p.xaxis.axis_label = "Ticket closed (date)"
     p.xaxis.major_label_orientation = "vertical"
     p.yaxis.axis_label = "Cycle time (days)"
+    p.y_range.start = 0
 
     p.scatter("x", "y", marker="circle", source=cycle_time_data_source, size="sizes")
     p.line(
@@ -108,9 +109,13 @@ def get_cycle_time(ticket: Issue) -> Optional[int]:
 
 def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
     cycle_window = [mean(window) for window in it.sliding_window(5, cycle_times)]
-    return ([cycle_window[0]] * 4) + cycle_window
+    return ([cycle_window[0]] * 2) + cycle_window + (cycle_window[-1] * 2)
 
 
 def standard_deviations(cycle_times: List[int]) -> List[float]:
     std_deviation_window = [std(window) for window in it.sliding_window(5, cycle_times)]
-    return ([std_deviation_window[0]] * 4) + std_deviation_window
+    return (
+        ([std_deviation_window[0]] * 2)
+        + std_deviation_window
+        + ([std_deviation_window[-1]] * 2)
+    )
