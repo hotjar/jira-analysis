@@ -1,6 +1,6 @@
 # Jira Ticket Analysis tools
 
-A simple suite of tools that I use to graph 
+A simple suite of tools that let us report on engineering KPIs out of Jira.
 
 ## Setup instructions
 
