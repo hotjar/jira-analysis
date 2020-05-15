@@ -21,7 +21,7 @@ def cli():
 @cli.command()
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
-def fetch_tickets(project: str, file_out):
+def fetch(project: str, file_out):
     """Fetch the tickets and save them as a JSON file.
     """
     config = jira_config("./credentials.yaml")
