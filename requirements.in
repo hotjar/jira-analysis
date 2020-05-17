@@ -4,6 +4,7 @@ black
 bokeh
 click
 flake8
+m2r
 mypy
 numpy
 pip-tools
