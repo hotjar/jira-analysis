@@ -74,7 +74,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     p.scatter("x", "y", marker="circle", source=cycle_time_data_source, size="sizes")
     p.line(
         completion_dates,
-        mean(cycle_times),
+        [mean(cycle_times) for _ in cycle_times],
         line_width=1,
         name="Average cycle time",
         color="red",
