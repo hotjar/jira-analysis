@@ -2,12 +2,13 @@
 
 import attr
 import click
+import json
 from datetime import datetime
 
 from jira_analysis.analysis.config import get_config as analysis_config
 from jira_analysis.analysis.ticket_control import generate_control_chart
 from jira_analysis.conversions.analysis import convert_jira_to_analysis
-from jira_analysis.file_handlers import json
+from jira_analysis.file_handlers import json_handler
 from jira_analysis.jira.auth import get_config as jira_config
 from jira_analysis.jira.issue import JiraTicket
 from jira_analysis.jira.network import get_issues, get_project
@@ -25,9 +26,12 @@ def cli():
 def fetch(project: str, file_out, credentials: str):
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
+    click.echo("Loading credentials")
     config = jira_config(credentials)
+    click.echo("Downloading Jira tickets")
     tickets = get_issues(config, get_project(config, project.upper()))
-    json.dump([attr.asdict(ticket) for ticket in tickets], file_out)
+    click.echo("Saving Jira tickets")
+    json_handler.dump([attr.asdict(ticket) for ticket in tickets], file_out)
 
 
 @cli.command()
@@ -50,7 +54,9 @@ def analyse(project, file_in, file_out, date_start: datetime, config: str):
 
     FILE_OUT Output the analysis HTML.
     """
+    click.echo("Loading config")
     config_file = analysis_config(project, config)
+    click.echo("Loading Jira tickets")
     data = json.load(file_in)
     jira_tickets = [JiraTicket.from_json(t) for t in data]
     issues = (convert_jira_to_analysis(config_file, j) for j in jira_tickets)
@@ -60,6 +66,7 @@ def analyse(project, file_in, file_out, date_start: datetime, config: str):
             for i in issues
             if i.completed is not None and i.completed.date() >= date_start.date()
         )
+    click.echo("Building charts")
     generate_control_chart(list(issues), file_out)
 
 
