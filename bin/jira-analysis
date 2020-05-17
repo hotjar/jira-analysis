@@ -21,10 +21,11 @@ def cli():
 @cli.command()
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
-def fetch(project: str, file_out):
+@click.option("credentials", "-c", type=str, help="Jira credentials file")
+def fetch(project: str, file_out, credentials: str):
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
-    config = jira_config("./credentials.yaml")
+    config = jira_config(credentials)
     tickets = get_issues(config, get_project(config, project.upper()))
     json.dump([attr.asdict(ticket) for ticket in tickets], file_out)
 
@@ -39,7 +40,8 @@ def fetch(project: str, file_out):
     type=click.DateTime(),
     help="Analyse tickets closed on or after this date.",
 )
-def analyse(project, file_in, file_out, date_start: datetime):
+@click.option("config", "-c", type=str, help="Config file to use for analysis.")
+def analyse(project, file_in, file_out, date_start: datetime, config: str):
     """Analyse pre-fetched tickets from the given file_in.
 
     PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
@@ -48,10 +50,10 @@ def analyse(project, file_in, file_out, date_start: datetime):
 
     FILE_OUT Output the analysis HTML.
     """
-    config = analysis_config(project, "./config.yaml")
+    config_file = analysis_config(project, config)
     data = json.load(file_in)
     jira_tickets = [JiraTicket.from_json(t) for t in data]
-    issues = (convert_jira_to_analysis(config, j) for j in jira_tickets)
+    issues = (convert_jira_to_analysis(config_file, j) for j in jira_tickets)
     if date_start is not None:
         issues = (
             i
