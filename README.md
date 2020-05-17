@@ -41,6 +41,8 @@ projects:
       - Done
 ```
 
+You can configure multiple projects with different settings for In Progress and Completed. Simple add items to the list.
+
 ## Running
 
 First you need to download tickets into a JSON file for analysis:
