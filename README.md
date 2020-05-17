@@ -5,11 +5,11 @@ A simple suite of tools that let us report on engineering KPIs out of Jira.
 ## Setup instructions
 
 ```
-git clone git@gitlab.com:hotjar/jira-analysis.git
+git clone git@github.com:hotjar/jira-analysis.git
 python3 -m venv venv
 . venv/bin/activation
 
-pip install -r requirements.txt
+python setup.py install
 ```
 
 You need to configure your Jira credentials and project config. This is two files:
@@ -43,10 +43,20 @@ projects:
 
 ## Running
 
+First you need to download tickets into a JSON file for analysis:
+
 ```
-./jira_analysis.py fetch <PROJECT_KEY> <tickets>.json
-./jira_analysis analyse <PROJECT_KEY> <tickets>.json <chart>.html
+jira-analysis fetch <PROJECT_KEY> <PROJECT_KEY>.json -c credentials.yaml
 ```
+
+Once this is done, you can analyse the tickets:
+
+```
+jira-analysis analyse <PROJECT_KEY> <PROJECT_KEY>.json <PROJECT_KEY>.html -c config.yaml
+```
+
+Note the `-c` argument that points to the `credentials.yaml` file you created for Jira and the `config.yaml` file for
+analysis.
 
 ## Why?
 
