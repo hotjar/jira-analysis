@@ -4,13 +4,13 @@ import attr
 import click
 from datetime import datetime
 
-from analysis.config import get_config as analysis_config
-from analysis.ticket_control import generate_control_chart
-from conversions.analysis import convert_jira_to_analysis
-from file_handlers import json
-from jira.auth import get_config as jira_config
-from jira.issue import JiraTicket
-from jira.network import get_issues, get_project
+from jira_analysis.analysis.config import get_config as analysis_config
+from jira_analysis.analysis.ticket_control import generate_control_chart
+from jira_analysis.conversions.analysis import convert_jira_to_analysis
+from jira_analysis.file_handlers import json
+from jira_analysis.jira.auth import get_config as jira_config
+from jira_analysis.jira.issue import JiraTicket
+from jira_analysis.jira.network import get_issues, get_project
 
 
 @click.group()
@@ -22,7 +22,7 @@ def cli():
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
 def fetch(project: str, file_out):
-    """Fetch the tickets and save them as a JSON file.
+    """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
     config = jira_config("./credentials.yaml")
     tickets = get_issues(config, get_project(config, project.upper()))
@@ -33,8 +33,21 @@ def fetch(project: str, file_out):
 @click.argument("project", type=str)
 @click.argument("file_in", type=click.File())
 @click.argument("file_out", type=str)
-@click.option("date_start", "-s", type=click.DateTime())
+@click.option(
+    "date_start",
+    "-s",
+    type=click.DateTime(),
+    help="Analyse tickets closed on or after this date.",
+)
 def analyse(project, file_in, file_out, date_start: datetime):
+    """Analyse pre-fetched tickets from the given file_in.
+
+    PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
+
+    FILE_IN The file path to load.
+
+    FILE_OUT Output the analysis HTML.
+    """
     config = analysis_config(project, "./config.yaml")
     data = json.load(file_in)
     jira_tickets = [JiraTicket.from_json(t) for t in data]

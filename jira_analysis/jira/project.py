@@ -1,6 +1,6 @@
-from typing import Dict, TypeVar, Type
-
 import attr
+
+from typing import Dict, TypeVar, Type
 
 T = TypeVar("T", bound="Parent")
 
