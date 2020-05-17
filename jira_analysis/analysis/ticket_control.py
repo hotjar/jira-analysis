@@ -18,14 +18,18 @@ from .issue import Issue
 def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     output_file(file_out)
 
-    completed_tickets = [
-        ticket
-        for ticket in tickets
-        if ticket.completed is not None and ticket.started is not None
-    ]
+    completed_tickets = list(
+        sorted(
+            (
+                ticket
+                for ticket in tickets
+                if ticket.completed is not None and ticket.started is not None
+            ),
+            key=attrgetter("completed"),
+        )
+    )
     completed_cycle_times = [
-        (ticket.completed, get_cycle_time(ticket))
-        for ticket in sorted(completed_tickets, key=attrgetter("completed"))
+        (ticket.completed, get_cycle_time(ticket)) for ticket in completed_tickets
     ]
     completions, cycle_times = list(zip(*completed_cycle_times))
     completion_dates = [c.date() for c in completions]
@@ -38,6 +42,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
                 cycle_time_heatmap[(c.date(), t)] * 3 + 2
                 for c, t in completed_cycle_times
             ],
+            "tickets": [t.key for t in completed_tickets],
         }
     )
     date_span = [
@@ -55,7 +60,12 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         {"x": completion_dates, "y1": upper_deviation, "y2": lower_deviation}
     )
 
-    p = figure(plot_width=1800, plot_height=900, x_range=date_span)
+    p = figure(
+        plot_width=1800,
+        plot_height=900,
+        x_range=date_span,
+        tooltips=[("Ticket ID", "@tickets"), ("Date", "@x"), ("Cycle time", "@y")],
+    )
     p.xaxis.axis_label = "Ticket closed (date)"
     p.xaxis.major_label_orientation = "vertical"
     p.yaxis.axis_label = "Cycle time (days)"
