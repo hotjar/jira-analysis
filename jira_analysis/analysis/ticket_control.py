@@ -5,14 +5,12 @@ from bokeh.models import VArea
 from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import figure, output_file, show
 from collections import Counter
-from datetime import date, datetime, timedelta
-from enum import Enum
-from numpy import busday_count, mean, std
+from numpy import mean
 from operator import attrgetter
-from typing import List, Optional
-from toolz import itertoolz as it
+from typing import List
 
 from .issue import Issue
+from .stats import get_cycle_time, rolling_average_cycle_time, standard_deviations
 
 
 def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
@@ -42,7 +40,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
                 cycle_time_heatmap[(c.date(), t)] * 3 + 2
                 for c, t in completed_cycle_times
             ],
-            "tickets": [t.key for t in completed_tickets],
+            "label": [t.key for t in completed_tickets],
         }
     )
     date_span = [
@@ -64,7 +62,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         plot_width=1800,
         plot_height=900,
         x_range=date_span,
-        tooltips=[("Ticket ID", "@tickets"), ("Date", "@x"), ("Cycle time", "@y")],
+        tooltips=[("Ticket ID", "@label"), ("Date", "@x"), ("Cycle time", "@y")],
     )
     p.xaxis.axis_label = "Ticket closed (date)"
     p.xaxis.major_label_orientation = "vertical"
@@ -108,24 +106,3 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     deviation_glyph = VArea(x="x", y1="y1", y2="y2", fill_color="green", fill_alpha=0.3)
     p.add_glyph(deviation_source, deviation_glyph)
     show(p)
-
-
-def get_cycle_time(ticket: Issue) -> Optional[int]:
-    if ticket.started is None or ticket.completed is None:
-        return None
-
-    return busday_count(ticket.started.date(), ticket.completed.date())
-
-
-def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
-    cycle_window = [mean(window) for window in it.sliding_window(5, cycle_times)]
-    return ([cycle_window[0]] * 2) + cycle_window + (cycle_window[-1] * 2)
-
-
-def standard_deviations(cycle_times: List[int]) -> List[float]:
-    std_deviation_window = [std(window) for window in it.sliding_window(5, cycle_times)]
-    return (
-        ([std_deviation_window[0]] * 2)
-        + std_deviation_window
-        + ([std_deviation_window[-1]] * 2)
-    )
