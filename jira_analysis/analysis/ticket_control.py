@@ -5,13 +5,19 @@ from bokeh.models import VArea
 from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import figure, output_file, show
 from collections import Counter
+from datetime import date
 from numpy import mean
 from operator import attrgetter
 from typing import List
 
-from .chart.cycle_time import CycleTime, CycleTimeDataSource, get_cycle_time
+from .chart.cycle_time import (
+    CycleTime,
+    CycleTimeDataSource,
+    CycleTimeDeviationDataSource,
+    get_cycle_time,
+)
 from .issue import Issue
-from .stats import rolling_average_cycle_time, standard_deviations
+from .chart.stats import rolling_average_cycle_time
 
 
 def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
@@ -32,37 +38,16 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         cycle_times=completed_cycle_times
     ).to_data_source(ColumnDataSource)
 
-    start_date = completed_cycle_times[0].completed
-    end_date = completed_cycle_times[-1].completed
-    date_span = [
-        d[0].date().isoformat()
-        for d in Arrow.span_range(
-            "day",
-            Arrow(start_date.year, start_date.month, start_date.day),
-            Arrow(end_date.year, end_date.month, end_date.day),
-        )
-    ]
-
     rolling_cycle_times = rolling_average_cycle_time(
         c.cycle_time for c in completed_cycle_times
     )
-    zipped_deviations = zip(
-        rolling_cycle_times,
-        standard_deviations(c.cycle_time for c in completed_cycle_times),
-    )
-    upper_deviation, lower_deviation = list(
-        zip(*((ct + sd, ct - sd) for ct, sd in zipped_deviations))
-    )
 
-    deviation_source = ColumnDataSource(
-        {"x": completion_dates, "y1": upper_deviation, "y2": lower_deviation,}
-    )
+    deviation_source = CycleTimeDeviationDataSource(
+        cycle_times=completed_cycle_times
+    ).to_data_source(ColumnDataSource)
 
-    p = figure(
-        plot_width=1800,
-        plot_height=900,
-        x_range=date_span,
-        tooltips=[("Ticket ID", "@label"), ("Date", "@x"), ("Cycle time", "@y")],
+    p = _get_figure(
+        completed_cycle_times[0].completed, completed_cycle_times[-1].completed
     )
     p.xaxis.axis_label = "Ticket closed (date)"
     p.xaxis.major_label_orientation = "vertical"
@@ -87,23 +72,41 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         color="green",
         alpha=0.9,
     )
-    p.line(
-        completion_dates,
-        upper_deviation,
-        line_width=1,
-        name="Upper bound",
-        color="green",
-        alpha=0.3,
-    )
+    # p.line(
+    #     completion_dates,
+    #     upper_deviation,
+    #     line_width=1,
+    #     name="Upper bound",
+    #     color="green",
+    #     alpha=0.3,
+    # )
 
-    p.line(
-        completion_dates,
-        lower_deviation,
-        line_width=1,
-        name="Lower bound",
-        color="green",
-        alpha=0.3,
-    )
+    # p.line(
+    #     completion_dates,
+    #     lower_deviation,
+    #     line_width=1,
+    #     name="Lower bound",
+    #     color="green",
+    #     alpha=0.3,
+    # )
     deviation_glyph = VArea(x="x", y1="y1", y2="y2", fill_color="green", fill_alpha=0.3)
     p.add_glyph(deviation_source, deviation_glyph)
     show(p)
+
+
+def _get_figure(start_date: date, end_date: date):
+    date_span = [
+        d[0].date().isoformat()
+        for d in Arrow.span_range(
+            "day",
+            Arrow(start_date.year, start_date.month, start_date.day),
+            Arrow(end_date.year, end_date.month, end_date.day),
+        )
+    ]
+
+    return figure(
+        plot_width=1800,
+        plot_height=900,
+        x_range=date_span,
+        tooltips=[("Ticket ID", "@label"), ("Date", "@x"), ("Cycle time", "@y")],
+    )

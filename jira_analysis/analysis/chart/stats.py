@@ -1,8 +1,13 @@
-from numpy import mean, std
+from datetime import date
+from numpy import busday_count, mean, std
 from toolz import itertoolz as it
 from typing import List, Optional
 
-from .issue import Issue
+from jira_analysis.analysis.issue import Issue
+
+
+def cycle_time(start: date, end: date) -> float:
+    return busday_count(start, end)
 
 
 def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
