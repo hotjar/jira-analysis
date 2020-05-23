@@ -10,14 +10,10 @@ from numpy import mean
 from operator import attrgetter
 from typing import List
 
-from .chart.cycle_time import (
-    CycleTime,
-    CycleTimeDataSource,
-    CycleTimeDeviationDataSource,
-    get_cycle_time,
-)
+from .chart.cycle_time import CycleTimeDataSource, CycleTimeDeviationDataSource
+from .cycle_time import CycleTime, get_cycle_time
 from .issue import Issue
-from .chart.stats import rolling_average_cycle_time
+from .stats import rolling_average_cycle_time
 
 
 def generate_control_chart(tickets: List[Issue], file_out: str) -> None:

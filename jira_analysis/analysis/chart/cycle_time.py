@@ -6,17 +6,10 @@ from datetime import date
 from operator import attrgetter
 from typing import Dict, List, Tuple, Type, TypeVar
 
-from jira_analysis.analysis.issue import Issue
+from jira_analysis.analysis.cycle_time import CycleTime
 
 from .base import BaseDataConverter
-from .stats import cycle_time, rolling_average_cycle_time, standard_deviations
-
-
-@attr.s(frozen=True)
-class CycleTime:
-    issue: str = attr.ib()
-    completed: date = attr.ib()
-    cycle_time: float = attr.ib()
+from jira_analysis.analysis.stats import rolling_average_cycle_time, standard_deviations
 
 
 @attr.s
@@ -71,33 +64,6 @@ class CycleTimeDeviationDataSource(BaseDataConverter):
         )
 
         return data_source({x: completions, y1: upper_deviation, y2: lower_deviation,})
-
-
-def get_cycle_time(issue: Issue) -> CycleTime:
-    """Return a CycleTime for a given Issue.
-
-    :param issue: Issue to convert. Both started and completed must be set.
-    :raises IssueNotComplete: If the issue is not a completed issue.
-    :return: The completed CycleTime
-    """
-    if issue.started is None or issue.completed is None:
-        raise IssueNotComplete(issue)
-
-    return CycleTime(
-        issue=issue.key,
-        completed=issue.completed.date(),
-        cycle_time=cycle_time(issue.started.date(), issue.completed.date()),
-    )
-
-
-class IssueNotComplete(Exception):
-    """The given ticket is not complete.
-    """
-
-    def __init__(self, issue: Issue):
-        self.issue = Issue
-        message = f"Incomplete issue: {issue.key}"
-        super().__init__(message)
 
 
 def _sort_cycle_times(cycle_times: List[CycleTime]) -> List[CycleTime]:
