@@ -24,7 +24,9 @@ class CycleTimeDataSource(BaseDataConverter):
 
     cycle_times: List[CycleTime] = attr.ib()
 
-    def to_data_source(self, data_source: Type[DataSource]) -> DataSource:
+    def to_data_source(
+        self, data_source: Type[DataSource], x="x", y="y", sizes="sizes", label="label"
+    ) -> DataSource:
         sorted_cycle_times = list(sorted(self.cycle_times, key=attrgetter("completed")))
 
         keys, completions, cycle_times = list(
@@ -36,13 +38,13 @@ class CycleTimeDataSource(BaseDataConverter):
 
         return data_source(
             {
-                "x": completions,
-                "y": cycle_times,
-                "sizes": [
+                x: completions,
+                y: cycle_times,
+                sizes: [
                     cycle_time_heatmap[(c, t)] * 3 + 2
                     for c, t in completion_cycle_times
                 ],
-                "label": keys,
+                label: keys,
             }
         )
 
