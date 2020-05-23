@@ -9,53 +9,53 @@ from numpy import mean
 from operator import attrgetter
 from typing import List
 
+from .chart.cycle_time import CycleTime, CycleTimeDataSource, get_cycle_time
 from .issue import Issue
-from .stats import get_cycle_time, rolling_average_cycle_time, standard_deviations
+from .stats import rolling_average_cycle_time, standard_deviations
 
 
 def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     output_file(file_out)
 
-    completed_tickets = list(
+    completed_cycle_times: List[CycleTime] = list(
         sorted(
             (
-                ticket
+                get_cycle_time(ticket)
                 for ticket in tickets
                 if ticket.completed is not None and ticket.started is not None
             ),
             key=attrgetter("completed"),
         )
     )
-    completed_cycle_times = [
-        (ticket.completed, get_cycle_time(ticket)) for ticket in completed_tickets
-    ]
-    completions, cycle_times = list(zip(*completed_cycle_times))
-    completion_dates = [c.date() for c in completions]
-    cycle_time_heatmap = Counter(((t.date(), c) for t, c in completed_cycle_times))
-    cycle_time_data_source = ColumnDataSource(
-        {
-            "x": completion_dates,
-            "y": cycle_times,
-            "sizes": [
-                cycle_time_heatmap[(c.date(), t)] * 3 + 2
-                for c, t in completed_cycle_times
-            ],
-            "label": [t.key for t in completed_tickets],
-        }
-    )
+    completion_dates = [c.completed for c in completed_cycle_times]
+    cycle_time_data_source = CycleTimeDataSource(
+        cycle_times=completed_cycle_times
+    ).to_data_source(ColumnDataSource)
+
+    start_date = completed_cycle_times[0].completed
+    end_date = completed_cycle_times[-1].completed
     date_span = [
         d[0].date().isoformat()
-        for d in Arrow.span_range("day", completions[0], completions[-1])
+        for d in Arrow.span_range(
+            "day",
+            Arrow(start_date.year, start_date.month, start_date.day),
+            Arrow(end_date.year, end_date.month, end_date.day),
+        )
     ]
 
-    rolling_cycle_times = rolling_average_cycle_time(cycle_times)
-    zipped_deviations = zip(rolling_cycle_times, standard_deviations(cycle_times))
+    rolling_cycle_times = rolling_average_cycle_time(
+        c.cycle_time for c in completed_cycle_times
+    )
+    zipped_deviations = zip(
+        rolling_cycle_times,
+        standard_deviations(c.cycle_time for c in completed_cycle_times),
+    )
     upper_deviation, lower_deviation = list(
         zip(*((ct + sd, ct - sd) for ct, sd in zipped_deviations))
     )
 
     deviation_source = ColumnDataSource(
-        {"x": completion_dates, "y1": upper_deviation, "y2": lower_deviation}
+        {"x": completion_dates, "y1": upper_deviation, "y2": lower_deviation,}
     )
 
     p = figure(
@@ -70,6 +70,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     p.y_range.start = 0
 
     p.scatter("x", "y", marker="circle", source=cycle_time_data_source, size="sizes")
+    cycle_times = [c.cycle_time for c in completed_cycle_times]
     p.line(
         completion_dates,
         [mean(cycle_times) for _ in cycle_times],

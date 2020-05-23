@@ -1,14 +1,8 @@
-from numpy import busday_count, mean, std
-from toolz import itertools as it
+from numpy import mean, std
+from toolz import itertoolz as it
 from typing import List, Optional
+
 from .issue import Issue
-
-
-def get_cycle_time(ticket: Issue) -> Optional[int]:
-    if ticket.started is None or ticket.completed is None:
-        return None
-
-    return busday_count(ticket.started.date(), ticket.completed.date())
 
 
 def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
