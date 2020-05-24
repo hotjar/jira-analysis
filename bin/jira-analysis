@@ -22,7 +22,7 @@ def cli():
 @cli.command()
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
-@click.option("credentials", "-c", type=str, help="Jira credentials file")
+@click.option("credentials", "-c", type=click.File("r"), help="Jira credentials file")
 def fetch(project: str, file_out, credentials: str):
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """

@@ -9,6 +9,8 @@ mypy
 numpy
 pip-tools
 pylint
+pytest
 pyyaml
 requests
 toolz
+validate_email
