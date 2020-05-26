@@ -1,3 +1,4 @@
+from abc import ABC, abstractmethod, abstractproperty
 import attr
 import requests
 from typing import List
@@ -7,21 +8,37 @@ from .auth import JiraConfig
 from .issue import StatusChange, JiraTicket, parse_jira_ticket
 from .project import JiraProject
 
-
 _JIRA_URL_BASE = "https://hotjar.atlassian.net/rest/api/3/"
 
 
-def get_issues(config: JiraConfig, project: JiraProject) -> List[JiraTicket]:
+class INetworkService(ABC):
+    @abstractmethod
+    def get(self, url: str, auth: JiraConfig) -> dict:
+        pass
+
+
+class NetworkService(INetworkService):
+    def get(self, url: str, auth: JiraConfig) -> dict:
+        return requests.get(url, auth=attr.astuple(auth)).json()
+
+
+_DEFAULT_NETWORK = NetworkService()
+
+
+def get_issues(
+    config: JiraConfig,
+    project: JiraProject,
+    network: INetworkService = _DEFAULT_NETWORK,
+) -> List[JiraTicket]:
     issues = []
     jira_url = urljoin(_JIRA_URL_BASE, "search")
     query = urlencode({"jql": "project={}".format(project.key), "expand": "changelog"})
-    response = requests.get("{}?{}".format(jira_url, query), auth=attr.astuple(config))
-    response_json = response.json()
+    response = network.get("{}?{}".format(jira_url, query), auth=config)
     page_size, total = (
-        response_json["maxResults"],
-        response_json["total"],
+        response["maxResults"],
+        response["total"],
     )
-    issues.extend([parse_jira_ticket(t) for t in response_json["issues"]])
+    issues.extend([parse_jira_ticket(t) for t in response["issues"]])
 
     for start in range(page_size, total, page_size):
         query = urlencode(
@@ -31,17 +48,14 @@ def get_issues(config: JiraConfig, project: JiraProject) -> List[JiraTicket]:
                 "startAt": start,
             }
         )
-        response = requests.get(
-            "{}?{}".format(jira_url, query), auth=attr.astuple(config)
-        )
-        response_json = response.json()
-        issues.extend([parse_jira_ticket(t) for t in response_json["issues"]])
+        response = network.get("{}?{}".format(jira_url, query), auth=config)
+        issues.extend([parse_jira_ticket(t) for t in response["issues"]])
     return issues
 
 
-def get_project(config: JiraConfig, key: str) -> JiraProject:
-    response = requests.get(
-        "https://hotjar.atlassian.net/rest/api/3/project/{key}".format(key=key),
-        auth=attr.astuple(config),
-    )
-    return JiraProject.from_jira_project(response.json())
+def get_project(
+    config: JiraConfig, key: str, network: INetworkService = _DEFAULT_NETWORK
+) -> JiraProject:
+    project_base = urljoin(_JIRA_URL_BASE, "project")
+    response = network.get(urljoin(project_base, key), auth=config)
+    return JiraProject.from_jira_project(response)

@@ -23,7 +23,7 @@ class JiraTicket:
     changelog: List[StatusChange] = attr.ib()
 
 
-def parse_jira_ticket(ticket_dict: Dict[str, Dict[str, Any]]) -> JiraTicket:
+def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
     changelog = []
     for item in ticket_dict["changelog"]["histories"]:
         for log in item["items"]:
