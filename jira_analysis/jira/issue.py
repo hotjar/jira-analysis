@@ -1,10 +1,8 @@
 import arrow
 import attr
 
-from typing import Any, Dict, List, Optional, TypeVar, Type
+from typing import Any, Dict, List
 from datetime import datetime
-
-T = TypeVar("T", bound="Parent")
 
 
 @attr.s
@@ -24,52 +22,52 @@ class JiraTicket:
     status: str = attr.ib()
     changelog: List[StatusChange] = attr.ib()
 
-    @classmethod
-    def from_jira_ticket(cls: Type[T], ticket_dict: Dict[str, Dict[str, Any]]) -> T:
-        changelog = []
-        for item in ticket_dict["changelog"]["histories"]:
-            for log in item["items"]:
-                if log["field"] != "status":
-                    continue
-                changelog.append(
-                    StatusChange(
-                        created=arrow.get(item["created"]).datetime,
-                        status_from=log["fromString"],
-                        status_to=log["toString"],
-                    )
-                )
 
-        return cls(
-            key=ticket_dict["key"],
-            created=arrow.get(ticket_dict["fields"]["created"]).datetime,
-            updated=arrow.get(ticket_dict["fields"]["updated"]).datetime,
-            description=_parse_description(ticket_dict["fields"]["description"])
-            if ticket_dict["fields"]["description"]
-            else "",
-            status=ticket_dict["fields"]["status"]["name"],
-            changelog=changelog,
-        )
-
-    @classmethod
-    def from_json(cls: Type[T], ticket_dict: Dict[str, Any]) -> T:
-        return cls(
-            key=ticket_dict["key"],
-            created=arrow.get(ticket_dict["created"]).datetime,
-            updated=arrow.get(ticket_dict["updated"]).datetime,
-            description=ticket_dict["description"],
-            status=ticket_dict["status"],
-            changelog=[
+def parse_jira_ticket(ticket_dict: Dict[str, Dict[str, Any]]) -> JiraTicket:
+    changelog = []
+    for item in ticket_dict["changelog"]["histories"]:
+        for log in item["items"]:
+            if log["field"] != "status":
+                continue
+            changelog.append(
                 StatusChange(
-                    created=arrow.get(cl["created"]).datetime,
-                    status_from=cl["status_from"],
-                    status_to=cl["status_to"],
+                    created=arrow.get(item["created"]).datetime,
+                    status_from=log["fromString"],
+                    status_to=log["toString"],
                 )
-                for cl in ticket_dict["changelog"]
-            ],
-        )
+            )
+
+    return JiraTicket(
+        key=ticket_dict["key"],
+        created=arrow.get(ticket_dict["fields"]["created"]).datetime,
+        updated=arrow.get(ticket_dict["fields"]["updated"]).datetime,
+        description=_parse_description(ticket_dict["fields"]["description"])
+        if ticket_dict["fields"]["description"]
+        else "",
+        status=ticket_dict["fields"]["status"]["name"],
+        changelog=changelog,
+    )
 
 
-def _parse_description(doc: Dict[str, str]) -> str:
+def parse_json(ticket_dict: Dict[str, Any]) -> JiraTicket:
+    return JiraTicket(
+        key=ticket_dict["key"],
+        created=arrow.get(ticket_dict["created"]).datetime,
+        updated=arrow.get(ticket_dict["updated"]).datetime,
+        description=ticket_dict["description"],
+        status=ticket_dict["status"],
+        changelog=[
+            StatusChange(
+                created=arrow.get(cl["created"]).datetime,
+                status_from=cl["status_from"],
+                status_to=cl["status_to"],
+            )
+            for cl in ticket_dict["changelog"]
+        ],
+    )
+
+
+def _parse_description(doc: Dict[str, Any]) -> str:
     if doc["type"] == "doc":
         return "\n".join(_parse_description(item) for item in doc["content"])
     if doc["type"] == "paragraph":
@@ -107,10 +105,12 @@ def _parse_description(doc: Dict[str, str]) -> str:
             )
         return "\n".join(items)
     if doc["type"] == "unorderedList":
-        return "\n".join(
-            "* {}".format(
-                "".join(_parse_description(line) for line in item["content"])
-                for item in doc["content"]
+        items = []
+        for item in doc["content"]:
+            items.append(
+                "* {}".format(
+                    "".join(_parse_description(line) for line in item["content"])
+                )
             )
-        )
+        return "\n".join(items)
     return ""

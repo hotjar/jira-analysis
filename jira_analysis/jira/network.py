@@ -4,7 +4,7 @@ from typing import List
 from urllib.parse import urlencode, urljoin
 
 from .auth import JiraConfig
-from .issue import StatusChange, JiraTicket
+from .issue import StatusChange, JiraTicket, parse_jira_ticket
 from .project import JiraProject
 
 
@@ -21,7 +21,7 @@ def get_issues(config: JiraConfig, project: JiraProject) -> List[JiraTicket]:
         response_json["maxResults"],
         response_json["total"],
     )
-    issues.extend([JiraTicket.from_jira_ticket(t) for t in response_json["issues"]])
+    issues.extend([parse_jira_ticket(t) for t in response_json["issues"]])
 
     for start in range(page_size, total, page_size):
         query = urlencode(
@@ -35,7 +35,7 @@ def get_issues(config: JiraConfig, project: JiraProject) -> List[JiraTicket]:
             "{}?{}".format(jira_url, query), auth=attr.astuple(config)
         )
         response_json = response.json()
-        issues.extend([JiraTicket.from_jira_ticket(t) for t in response_json["issues"]])
+        issues.extend([parse_jira_ticket(t) for t in response_json["issues"]])
     return issues
 
 
@@ -45,13 +45,3 @@ def get_project(config: JiraConfig, key: str) -> JiraProject:
         auth=attr.astuple(config),
     )
     return JiraProject.from_jira_project(response.json())
-
-
-def get_issue(config: JiraConfig, key: str) -> JiraTicket:
-    response = requests.get(
-        "https://hotjar.atlassian.net/rest/api/3/issue/{key}?expand=changelog".format(
-            key=key
-        ),
-        auth=attr.astuple(config),
-    )
-    return JiraTicket.from_jira_ticket(response.json())
