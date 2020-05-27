@@ -1,5 +1,5 @@
 import attr
-from typing import Dict, TypeVar, Type
+from typing import Dict, IO, TypeVar, Type
 from validate_email import validate_email
 from yaml import safe_load
 
@@ -12,7 +12,7 @@ class JiraConfig:
     token: str = attr.ib()
 
     @email.validator
-    def valid_email_address(self, attribute, value):
+    def valid_email_address(self, attribute: str, value: str) -> None:
         if not validate_email(value):
             raise ValueError(f"Invalid {attribute} format: {value}")
 
@@ -21,6 +21,6 @@ class JiraConfig:
         return cls(**credentials["jira_credentials"])
 
 
-def get_config(credentials_file) -> JiraConfig:
+def get_config(credentials_file: IO) -> JiraConfig:
     credentials = safe_load(credentials_file)
     return JiraConfig.from_credentials(credentials)

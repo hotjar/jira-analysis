@@ -1,6 +1,6 @@
 import attr
 
-from typing import Set
+from typing import IO, Set
 from yaml import safe_load
 
 
@@ -17,7 +17,7 @@ class Config:
         return status in self.in_progress
 
 
-def get_config(project_key: str, config_file) -> Config:
+def get_config(project_key: str, config_file: IO) -> Config:
     config = safe_load(config_file)
 
     project = config["projects"][project_key]

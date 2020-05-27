@@ -64,7 +64,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         completion_dates,
         rolling_cycle_times,
         line_width=3,
-        name="Cycle time sliding window",
+        name="Rolling Average Cycle Time",
         color="green",
         alpha=0.9,
     )

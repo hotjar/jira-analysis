@@ -4,7 +4,7 @@ from bokeh.models.sources import DataSource
 from collections import Counter
 from datetime import date
 from operator import attrgetter
-from typing import Dict, List, Tuple, Type, TypeVar
+from typing import Dict, List, Tuple, Type, cast
 
 from jira_analysis.analysis.cycle_time import CycleTime
 
@@ -70,5 +70,10 @@ def _sort_cycle_times(cycle_times: List[CycleTime]) -> List[CycleTime]:
     return list(sorted(cycle_times, key=attrgetter("completed")))
 
 
-def _unsplit(cycle_times: List[CycleTime]) -> List[Tuple[str, date, float]]:
-    return list(zip(*(attr.astuple(ct) for ct in cycle_times)))
+def _unsplit(
+    cycle_times: List[CycleTime],
+) -> Tuple[Tuple[str, ...], Tuple[date, ...], Tuple[float, ...]]:
+    return cast(
+        Tuple[Tuple[str, ...], Tuple[date, ...], Tuple[float, ...]],
+        tuple(zip(*(attr.astuple(ct) for ct in cycle_times))),
+    )
