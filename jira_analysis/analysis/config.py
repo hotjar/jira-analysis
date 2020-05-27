@@ -17,9 +17,8 @@ class Config:
         return status in self.in_progress
 
 
-def get_config(project_key: str, config_file: str) -> Config:
-    with open(config_file) as f:
-        config = safe_load(f)
+def get_config(project_key: str, config_file) -> Config:
+    config = safe_load(config_file)
 
     project = config["projects"][project_key]
     return Config(
