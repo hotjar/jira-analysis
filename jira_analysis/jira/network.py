@@ -56,6 +56,5 @@ def get_issues(
 def get_project(
     config: JiraConfig, key: str, network: INetworkService = _DEFAULT_NETWORK
 ) -> JiraProject:
-    project_base = urljoin(_JIRA_URL_BASE, "project")
-    response = network.get(urljoin(project_base, key), auth=config)
+    response = network.get(urljoin(_JIRA_URL_BASE, f"project/{key}"), auth=config)
     return JiraProject.from_jira_project(response)

@@ -17,7 +17,7 @@ class _MockNetwork(INetworkService):
 
     def get(self, url, auth):
         self.assigned_url = url
-        self.auth = auth
+        self.assigned_auth = auth
         return self.return_value
 
     def check_url(self, url):
@@ -39,18 +39,22 @@ issue_network = mock_network(
     {
         "maxResults": 50,
         "total": 1,
-        "issues": {
-            "key": "KEY-123",
-            "fields": {
-                "created": "2020-01-10T09:01:10.000000",
-                "updated": "2020-01-30T15:01:05.000000",
-                "status": {"name": "Done"},
-                "description": {"type": "doc"},
-            },
-            "changelog": {"histories": []},
-        },
+        "issues": [
+            {
+                "key": "KEY-123",
+                "fields": {
+                    "created": "2020-01-10T09:01:10.000000",
+                    "updated": "2020-01-30T15:01:05.000000",
+                    "status": {"name": "Done"},
+                    "description": {"type": "doc", "content": []},
+                },
+                "changelog": {"histories": []},
+            }
+        ],
     }
 )
+
+project_network = mock_network({"id": 10, "key": "PROJ"})
 
 
 @pytest.fixture
@@ -86,6 +90,25 @@ def test_get_issues_uses_correct_endpoint(
     get_issues(auth, jira_project, issue_network)
 
     issue_network.check_url(
-        "https://hotjar.atlassian.net/rest/api/3/search?jql=project%3DPROJ"
+        "https://hotjar.atlassian.net/rest/api/3/search?jql=project%3DPROJ&expand=changelog"
     )
 
+
+def test_get_issues_uses_auth(auth, project_network):
+    get_project(auth, "PROJ", project_network)
+    project_network.check_auth(auth)
+
+
+def test_get_project(jira_project, auth, project_network):
+    project = get_project(auth, "PROJ", project_network)
+    assert project == jira_project
+
+
+def test_get_project_uses_correct_endpoint(auth, project_network):
+    get_project(auth, "PROJ", project_network)
+    project_network.check_url("https://hotjar.atlassian.net/rest/api/3/project/PROJ")
+
+
+def get_project_uses_auth(auth, project_network):
+    get_project(auth, "PROJ", project_network)
+    project_network.check_auth(auth)
