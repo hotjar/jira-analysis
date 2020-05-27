@@ -1,7 +1,8 @@
 from datetime import date
+from functools import partial
 from numpy import busday_count, mean, std
 from toolz import itertoolz as it
-from typing import List, Optional
+from typing import Callable, Iterable, List, Optional
 
 from jira_analysis.analysis.issue import Issue
 
@@ -10,15 +11,12 @@ def cycle_time(start: date, end: date) -> float:
     return busday_count(start, end)
 
 
-def rolling_average_cycle_time(cycle_times: List[int]) -> List[float]:
-    cycle_window = [mean(window) for window in it.sliding_window(5, cycle_times)]
-    return ([cycle_window[0]] * 2) + cycle_window + (cycle_window[-1] * 2)
+def padded_sliding_window(
+    func: Callable[[Iterable[int]], float], cycle_times: List[int]
+) -> List[float]:
+    sliding_windows = [func(window) for window in it.sliding_window(5, cycle_times)]
+    return [sliding_windows[0]] * 2 + sliding_windows + [sliding_windows[-1]] * 2
 
 
-def standard_deviations(cycle_times: List[int]) -> List[float]:
-    std_deviation_window = [std(window) for window in it.sliding_window(5, cycle_times)]
-    return (
-        ([std_deviation_window[0]] * 2)
-        + std_deviation_window
-        + ([std_deviation_window[-1]] * 2)
-    )
+rolling_average_cycle_time = partial(padded_sliding_window, mean)
+standard_deviations = partial(padded_sliding_window, std)

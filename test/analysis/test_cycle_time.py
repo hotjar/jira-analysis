@@ -36,7 +36,7 @@ def incomplete_issue():
     )
 
 
-def test_get_cycle_time_and_accounts_weekend(cycle_time, complete_issue):
+def test_get_cycle_time(cycle_time, complete_issue):
     assert get_cycle_time(complete_issue) == cycle_time
 
 
