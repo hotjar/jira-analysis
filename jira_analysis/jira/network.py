@@ -6,7 +6,7 @@ from urllib.parse import urlencode, urljoin
 
 from .auth import JiraConfig
 from .issue import StatusChange, JiraTicket, parse_jira_ticket
-from .project import JiraProject
+from .project import JiraProject, parse_jira_project
 
 _JIRA_URL_BASE = "https://hotjar.atlassian.net/rest/api/3/"
 
@@ -61,4 +61,4 @@ def get_project(
     config: JiraConfig, key: str, network: INetworkService = _DEFAULT_NETWORK
 ) -> JiraProject:
     response = network.get(urljoin(_JIRA_URL_BASE, f"project/{key}"), auth=config)
-    return JiraProject.from_jira_project(response)
+    return parse_jira_project(response)
