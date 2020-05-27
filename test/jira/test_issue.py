@@ -46,6 +46,7 @@ def jira_descriptions():
                     "created": "2020-01-30T15:01:05.000000",
                     "items": [
                         {"field": "status", "fromString": "To do", "toString": "Done",},
+                        {"field": "comment"},
                     ],
                 }
             ]
@@ -96,6 +97,7 @@ def jira_descriptions():
                 {"content": [{"type": "text", "text": "Item"},]},
             ],
         },
+        {"type": "image", "content": []},
     ]
     parsed_descriptions = [
         "---",
@@ -108,6 +110,7 @@ def jira_descriptions():
         "```python\nprint('Hello, world')\n```",
         "1. Item\n2. Item",
         "* Item\n* Item",
+        "",
     ]
     raw_descriptions = []
     for description in descriptions:

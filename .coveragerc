@@ -1,0 +1,5 @@
+[tool:pytest]
+addopts = --cov=jira_analysis  --cov-report=term_missing
+
+[run]
+omit = tests/*

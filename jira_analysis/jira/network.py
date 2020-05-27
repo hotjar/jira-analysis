@@ -18,8 +18,10 @@ class INetworkService(ABC):
 
 
 class NetworkService(INetworkService):
+    requests = requests
+
     def get(self, url: str, auth: JiraConfig) -> dict:
-        return requests.get(url, auth=attr.astuple(auth)).json()
+        return self.requests.get(url, auth=attr.astuple(auth)).json()
 
 
 _DEFAULT_NETWORK = NetworkService()
@@ -38,6 +40,8 @@ def get_issues(
         response["maxResults"],
         response["total"],
     )
+    if page_size > total:
+        page_size = total
     issues.extend([parse_jira_ticket(t) for t in response["issues"]])
 
     for start in range(page_size, total, page_size):

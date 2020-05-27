@@ -10,3 +10,4 @@ venv/
 *.html
 credentials.yaml
 config.yaml
+.coverage

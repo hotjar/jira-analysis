@@ -10,6 +10,7 @@ numpy
 pip-tools
 pylint
 pytest
+pytest-cov
 pyyaml
 requests
 toolz
