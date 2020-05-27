@@ -35,6 +35,6 @@ class IssueNotComplete(Exception):
     """
 
     def __init__(self, issue: Issue):
-        self.issue = Issue
+        self.issue = issue
         message = f"Incomplete issue: {issue.key}"
         super().__init__(message)
