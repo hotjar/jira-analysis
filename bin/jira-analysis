@@ -10,7 +10,7 @@ from jira_analysis.analysis.ticket_control import generate_control_chart
 from jira_analysis.conversions.analysis import convert_jira_to_analysis
 from jira_analysis.file_handlers import json_handler
 from jira_analysis.jira.auth import get_config as jira_config
-from jira_analysis.jira.issue import JiraTicket
+from jira_analysis.jira.issue import parse_json as parse_jira_ticket_from_json
 from jira_analysis.jira.network import get_issues, get_project
 
 
@@ -44,7 +44,9 @@ def fetch(project: str, file_out, credentials: str):
     type=click.DateTime(),
     help="Analyse tickets closed on or after this date.",
 )
-@click.option("config", "-c", type=str, help="Config file to use for analysis.")
+@click.option(
+    "config", "-c", type=click.File(), help="Config file to use for analysis."
+)
 def analyse(project, file_in, file_out, date_start: datetime, config: str):
     """Analyse pre-fetched tickets from the given file_in.
 
@@ -58,7 +60,7 @@ def analyse(project, file_in, file_out, date_start: datetime, config: str):
     config_file = analysis_config(project, config)
     click.echo("Loading Jira tickets")
     data = json.load(file_in)
-    jira_tickets = [JiraTicket.from_json(t) for t in data]
+    jira_tickets = [parse_jira_ticket_from_json(t) for t in data]
     issues = (convert_jira_to_analysis(config_file, j) for j in jira_tickets)
     if date_start is not None:
         issues = (

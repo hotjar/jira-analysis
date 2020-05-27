@@ -14,7 +14,7 @@ from jira_analysis.analysis.stats import (
     "start,end,ct",
     [
         (date(2020, 5, 25), date(2020, 5, 27), 2),
-        (date(2020, 5, 20), date(2020, 5, 25), 3),
+        (date(2020, 5, 20), date(2020, 5, 25), 3),  # Run over a weekend
     ],
 )
 def test_cycle_time(start, end, ct):
