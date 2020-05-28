@@ -6,9 +6,9 @@ from datetime import date
 from operator import attrgetter
 from typing import List, Tuple, Type, cast
 
-from jira_analysis.analysis.cycle_time import CycleTime
-
 from jira_analysis.analysis.chart.base import IChart, Plot
+from jira_analysis.analysis.cycle_time import CycleTime
+from .utils import sort_cycle_times, unsplit
 
 
 @attr.s(frozen=True)
@@ -22,9 +22,9 @@ class CycleTimeScatterPlot(Plot):
         chart.scatter("x", "y", marker="circle", source=data, size="sizes")
 
     def to_data_source(self) -> DataSource:
-        sorted_cycle_times = _sort_cycle_times(self.cycle_times)
+        sorted_cycle_times = sort_cycle_times(self.cycle_times)
 
-        keys, completions, cycle_times = _unsplit(sorted_cycle_times)
+        keys, completions, cycle_times = unsplit(sorted_cycle_times)
 
         completion_cycle_times = list(zip(completions, cycle_times))
         cycle_time_heatmap = Counter(completion_cycle_times)
@@ -42,14 +42,3 @@ class CycleTimeScatterPlot(Plot):
         )
 
 
-def _sort_cycle_times(cycle_times: List[CycleTime]) -> List[CycleTime]:
-    return list(sorted(cycle_times, key=attrgetter("completed")))
-
-
-def _unsplit(
-    cycle_times: List[CycleTime],
-) -> Tuple[Tuple[str, ...], Tuple[date, ...], Tuple[float, ...]]:
-    return cast(
-        Tuple[Tuple[str, ...], Tuple[date, ...], Tuple[float, ...]],
-        tuple(zip(*(attr.astuple(ct) for ct in cycle_times))),
-    )
