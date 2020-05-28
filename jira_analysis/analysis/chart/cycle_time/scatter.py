@@ -2,9 +2,7 @@ import attr
 
 from bokeh.models.sources import DataSource
 from collections import Counter
-from datetime import date
-from operator import attrgetter
-from typing import List, Tuple, Type, cast
+from typing import List, Type
 
 from jira_analysis.analysis.chart.base import IChart, Plot
 from jira_analysis.analysis.cycle_time import CycleTime
@@ -40,5 +38,3 @@ class CycleTimeScatterPlot(Plot):
                 "label": keys,
             }
         )
-
-

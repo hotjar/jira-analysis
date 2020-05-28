@@ -21,7 +21,7 @@ def sort_cycle_times(cycle_times: List[CycleTime]) -> List[CycleTime]:
 def unsplit(
     cycle_times: List[CycleTime],
 ) -> Tuple[Tuple[str, ...], Tuple[date, ...], Tuple[float, ...]]:
-    """Unsplit the cycle times into a tuple of three lists: ticket_key, completed_date, cycle_time.
+    """Unsplit the cycle times into a tuple of three lists.
 
     :param cycle_times: The cycle times to split out.
     :return: Three tuples of: ticket_keys, completed_dates, cycle_times

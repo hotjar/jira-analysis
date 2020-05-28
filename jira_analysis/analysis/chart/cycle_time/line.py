@@ -1,8 +1,7 @@
 import attr
 
-from datetime import date
 from numpy import mean
-from typing import List, Tuple, cast
+from typing import List
 
 from jira_analysis.analysis.chart.base import IChart, Plot
 from jira_analysis.analysis.cycle_time import CycleTime

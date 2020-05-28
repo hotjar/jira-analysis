@@ -2,8 +2,6 @@ import attr
 
 from bokeh.models import VArea
 from bokeh.models.sources import DataSource
-from datetime import date
-from operator import attrgetter
 from typing import List, Tuple, Type, cast
 
 from jira_analysis.analysis.cycle_time import CycleTime
