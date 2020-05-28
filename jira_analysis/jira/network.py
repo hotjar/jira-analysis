@@ -1,11 +1,11 @@
-from abc import ABC, abstractmethod, abstractproperty
+from abc import ABC, abstractmethod
 import attr
 import requests
 from typing import List
 from urllib.parse import urlencode, urljoin
 
 from .auth import JiraConfig
-from .issue import StatusChange, JiraTicket, parse_jira_ticket
+from .issue import JiraTicket, parse_jira_ticket
 from .project import JiraProject, parse_jira_project
 
 _JIRA_URL_BASE = "https://hotjar.atlassian.net/rest/api/3/"

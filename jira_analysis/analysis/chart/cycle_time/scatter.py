@@ -4,10 +4,9 @@ from bokeh.models.sources import DataSource
 from collections import Counter
 from datetime import date
 from operator import attrgetter
-from typing import Dict, List, Optional, Tuple, Type, cast
+from typing import List, Tuple, Type, cast
 
 from jira_analysis.analysis.cycle_time import CycleTime
-from jira_analysis.analysis.stats import rolling_average_cycle_time, standard_deviations
 
 from jira_analysis.analysis.chart.base import IChart, Plot
 

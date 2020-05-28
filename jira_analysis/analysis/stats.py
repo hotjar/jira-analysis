@@ -2,9 +2,7 @@ from datetime import date
 from functools import partial
 from numpy import busday_count, mean, std
 from toolz import itertoolz as it
-from typing import Callable, Iterable, List, Optional
-
-from jira_analysis.analysis.issue import Issue
+from typing import Callable, Iterable, List
 
 
 def cycle_time(start: date, end: date) -> float:

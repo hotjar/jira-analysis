@@ -1,9 +1,7 @@
 import attr
 
 from abc import ABC, abstractmethod, abstractproperty
-from bokeh.models import VArea
-from bokeh.models.sources import ColumnDataSource
-from bokeh.plotting import figure, output_file, show
+from bokeh.plotting import figure, show
 from typing import Callable, List, Optional
 
 
@@ -33,10 +31,10 @@ class IChart(ABC):
 
 
 class Chart(IChart):
-    def __init__(self, x: Axis, y: Axis, label: str):
+    def __init__(self, x: Axis, y: Axis, label: str, create_chart: Callable = figure):
         self._x = x
         self._y = y
-        self._figure = figure(
+        self._figure = create_chart(
             plot_width=self._x.size,
             plot_height=self._y.size,
             x_range=self._x.values,

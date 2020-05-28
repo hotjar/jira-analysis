@@ -29,8 +29,6 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
     cycle_time_plot = CycleTimeScatterPlot(
         cycle_times=completed_cycle_times, data_source=ColumnDataSource
     )
-    completion_dates = [c.completed for c in completed_cycle_times]
-
     average_cycle_time_plot = AverageCycleTimePlot(cycle_times=completed_cycle_times)
     rolling_cycle_time_plot = RollingAverageCycleTimePlot(
         cycle_times=completed_cycle_times

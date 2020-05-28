@@ -2,10 +2,9 @@ import attr
 
 from bokeh.models import VArea
 from bokeh.models.sources import DataSource
-from collections import Counter
 from datetime import date
 from operator import attrgetter
-from typing import Dict, List, Optional, Tuple, Type, cast
+from typing import List, Tuple, Type, cast
 
 from jira_analysis.analysis.cycle_time import CycleTime
 from jira_analysis.analysis.stats import rolling_average_cycle_time, standard_deviations
@@ -55,7 +54,7 @@ class CycleTimeDeviationPlot(Plot):
         upper_deviation, lower_deviation = _get_standard_deviations(sorted_cycle_times)
 
         return self.data_source(
-            {"x": completions, "y1": upper_deviation, "y2": lower_deviation,}
+            {"x": completions, "y1": upper_deviation, "y2": lower_deviation}
         )
 
 
