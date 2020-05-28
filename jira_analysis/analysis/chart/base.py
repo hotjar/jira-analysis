@@ -31,7 +31,14 @@ class IChart(ABC):
 
 
 class Chart(IChart):
-    def __init__(self, x: Axis, y: Axis, label: str, create_chart: Callable = figure):
+    def __init__(
+        self,
+        x: Axis,
+        y: Axis,
+        label: str,
+        create_chart: Callable = figure,
+        render: Callable = show,
+    ):
         self._x = x
         self._y = y
         self._figure = create_chart(
@@ -45,9 +52,10 @@ class Chart(IChart):
         self._figure.xaxis.major_label_orientation = "vertical"
         self._figure.yaxis.axis_label = self._y.label
         self._figure.y_range.start = 0
+        self._render = render
 
     def render(self):
-        show(self._figure)
+        self._render(self._figure)
 
     @property
     def scatter(self) -> Callable:

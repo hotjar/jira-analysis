@@ -11,17 +11,13 @@ from .helpers import chart
 
 @pytest.fixture
 def sorted_completions():
-    return tuple(
-        sorted(
-            [
-                date(2020, 5, 1),
-                date(2020, 5, 1),
-                date(2020, 1, 1),
-                date(2020, 10, 1),
-                date(2019, 12, 3),
-                date(2020, 4, 30),
-            ]
-        )
+    return (
+        date(2019, 12, 3),
+        date(2020, 1, 1),
+        date(2020, 4, 30),
+        date(2020, 5, 1),
+        date(2020, 5, 1),
+        date(2020, 10, 1),
     )
 
 
