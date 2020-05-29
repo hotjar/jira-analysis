@@ -160,7 +160,8 @@ def test_get_issues_uses_correct_endpoint(jira_project, auth, issue_network):
     get_issues(auth, jira_project, issue_network)
 
     issue_network.check_url(
-        "https://hotjar.atlassian.net/rest/api/3/search?jql=project%3DPROJ&expand=changelog"
+        "https://hotjar.atlassian.net/rest/api/3/search?"
+        "jql=project%3DPROJ&expand=changelog"
     )
 
 
