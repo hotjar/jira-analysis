@@ -71,5 +71,6 @@ class Chart(IChart):
 
 
 class Plot(ABC):
+    @abstractmethod
     def draw(self, chart: IChart) -> None:
         pass
