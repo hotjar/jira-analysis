@@ -12,6 +12,8 @@ def cycle_time(start: date, end: date) -> float:
 def padded_sliding_window(
     func: Callable[[Iterable[int]], float], cycle_times: List[int]
 ) -> List[float]:
+    if len(cycle_times) < 5:
+        return [func(cycle_times) for _ in cycle_times]
     sliding_windows = [func(window) for window in it.sliding_window(5, cycle_times)]
     return [sliding_windows[0]] * 2 + sliding_windows + [sliding_windows[-1]] * 2
 

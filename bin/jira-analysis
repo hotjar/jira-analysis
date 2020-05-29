@@ -37,7 +37,6 @@ def fetch(project: str, file_out, credentials: str):
 @cli.command()
 @click.argument("project", type=str)
 @click.argument("file_in", type=click.File())
-@click.argument("file_out", type=str)
 @click.option(
     "date_start",
     "-s",
@@ -47,14 +46,12 @@ def fetch(project: str, file_out, credentials: str):
 @click.option(
     "config", "-c", type=click.File(), help="Config file to use for analysis."
 )
-def analyse(project, file_in, file_out, date_start: datetime, config: str):
+def analyse(project, file_in, date_start: datetime, config: str):
     """Analyse pre-fetched tickets from the given file_in.
 
     PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
 
     FILE_IN The file path to load.
-
-    FILE_OUT Output the analysis HTML.
     """
     click.echo("Loading config")
     config_file = analysis_config(project, config)
@@ -69,7 +66,7 @@ def analyse(project, file_in, file_out, date_start: datetime, config: str):
             if i.completed is not None and i.completed.date() >= date_start.date()
         )
     click.echo("Building charts")
-    generate_control_chart(list(issues), file_out)
+    generate_control_chart(list(issues))
 
 
 if __name__ == "__main__":

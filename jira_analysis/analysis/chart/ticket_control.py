@@ -1,21 +1,18 @@
 from arrow import Arrow
 from bokeh.models.sources import ColumnDataSource
-from bokeh.plotting import output_file
 from operator import attrgetter
-from typing import List
+from typing import List, Type
 
 from jira_analysis.analysis.cycle_time import CycleTime, get_cycle_time
 from jira_analysis.analysis.issue import Issue
 
-from .base import Axis, Chart
+from .base import Axis, Chart, IChart
 from .cycle_time.deviation import CycleTimeDeviationPlot
 from .cycle_time.line import AverageCycleTimePlot, RollingAverageCycleTimePlot
 from .cycle_time.scatter import CycleTimeScatterPlot
 
 
-def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
-    output_file(file_out)
-
+def generate_control_chart(tickets: List[Issue], chart_class: IChart = Chart) -> None:
     completed_cycle_times: List[CycleTime] = list(
         sorted(
             (
@@ -44,7 +41,7 @@ def generate_control_chart(tickets: List[Issue], file_out: str) -> None:
         completed_cycle_times[-1].completed,
     )
 
-    chart = Chart(
+    chart = chart_class(
         x=Axis(
             label="Closed (date)",
             values=[

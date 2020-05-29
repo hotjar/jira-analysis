@@ -21,17 +21,16 @@ def test_cycle_time(start, end, ct):
     assert cycle_time(start, end) == ct
 
 
-def test_padded_sliding_window():
-    assert padded_sliding_window(sum, [1, 1, 1, 1, 1, 2, 2, 2]) == [
-        5,
-        5,
-        5,
-        6,
-        7,
-        8,
-        8,
-        8,
-    ]
+@pytest.mark.parametrize(
+    "test_func,test_input,expected_output",
+    [
+        (sum, [1, 1, 1, 1, 1, 2, 2, 2], [5, 5, 5, 6, 7, 8, 8, 8,]),
+        (sum, [1, 2, 3], [6, 6, 6]),
+        (sum, [1, 1, 1, 1, 1], [5, 5, 5, 5, 5]),
+    ],
+)
+def test_padded_sliding_window(test_func, test_input, expected_output):
+    assert padded_sliding_window(test_func, test_input) == expected_output
 
 
 @pytest.mark.parametrize(
