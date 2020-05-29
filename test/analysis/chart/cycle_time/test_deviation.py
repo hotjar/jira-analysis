@@ -80,8 +80,9 @@ def test_draw(
     first_call, second_call = chart.line.call_args_list
     _assert_called(
         first_call,
-        sorted_completions,
-        upper_deviations,
+        "x",
+        "y",
+        source=mock.ANY,
         line_width=1,
         name="Upper bound",
         color="green",
@@ -89,8 +90,9 @@ def test_draw(
     )
     _assert_called(
         second_call,
-        sorted_completions,
-        lower_deviations,
+        "x",
+        "y",
+        source=mock.ANY,
         line_width=1,
         name="Lower bound",
         color="green",
