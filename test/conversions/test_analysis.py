@@ -10,7 +10,12 @@ from jira_analysis.jira.issue import JiraTicket, StatusChange
 
 @pytest.fixture
 def config():
-    return Config(project="PROJ", completed={"Done"}, in_progress={"In progress"})
+    return Config(
+        project="PROJ",
+        completed={"Done"},
+        in_progress={"In progress"},
+        analyse_issue_types=None,
+    )
 
 
 @pytest.fixture

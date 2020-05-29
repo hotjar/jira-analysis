@@ -8,7 +8,10 @@ from jira_analysis.analysis.issue import Issue, TicketStatus, create_issue_with_
 
 def config():
     return Config(
-        project="PROJ", completed={"Done"}, in_progress={"In Progress", "Review"}
+        project="PROJ",
+        completed={"Done"},
+        in_progress={"In Progress", "Review"},
+        analyse_issue_types=None,
     )
 
 
