@@ -1,48 +1,74 @@
 import attr
 
+from bokeh.models.sources import DataSource
 from numpy import mean
-from typing import List
+from typing import List, Type
 
-from jira_analysis.analysis.chart.base import IChart, Plot
 from jira_analysis.analysis.cycle_time import CycleTime
 from jira_analysis.analysis.stats import rolling_average_cycle_time
 
+from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit
 
 
 @attr.s(frozen=True)
-class AverageCycleTimePlot(Plot):
+class AverageCycleTimePlot(BaseCycleTimeLinePlot):
 
     cycle_times: List[CycleTime] = attr.ib()
+    data_source: Type[DataSource] = attr.ib()
 
-    def draw(self, chart: IChart) -> None:
+    def to_data_source(self) -> DataSource:
         sorted_cycle_times = sort_cycle_times(self.cycle_times)
-        _, completed_dates, cycle_times = unsplit(sorted_cycle_times)
+        _, completions, cycle_times = unsplit(sorted_cycle_times)
+        mean_cycle_time = mean(cycle_times)
 
-        chart.line(
-            completed_dates,
-            [mean(cycle_times) for _ in cycle_times],
-            line_width=1,
-            name="Average cycle time (days)",
-            color="red",
-            alpha=0.9,
+        return self.data_source(
+            {
+                "x": completions,
+                "y": [mean_cycle_time for _ in cycle_times],
+                "label": [self.label for _ in completions],
+            }
         )
+
+    @property
+    def label(self) -> str:
+        return "Average cycle time (days)"
+
+    @property
+    def color(self) -> str:
+        return "red"
+
+    @property
+    def width(self) -> int:
+        return 1
 
 
 @attr.s(frozen=True)
-class RollingAverageCycleTimePlot(Plot):
+class RollingAverageCycleTimePlot(BaseCycleTimeLinePlot):
 
     cycle_times: List[CycleTime] = attr.ib()
+    data_source: Type[DataSource] = attr.ib()
 
-    def draw(self, chart: IChart) -> None:
+    def to_data_source(self) -> DataSource:
         sorted_cycle_times = sort_cycle_times(self.cycle_times)
-        _, completed_dates, cycle_times = unsplit(sorted_cycle_times)
+        _, completions, cycle_times = unsplit(sorted_cycle_times)
 
-        chart.line(
-            completed_dates,
-            rolling_average_cycle_time(cycle_times),
-            line_width=3,
-            name="Rolling average cycle time (days)",
-            color="green",
-            alpha=0.9,
+        return self.data_source(
+            {
+                "x": completions,
+                "y": rolling_average_cycle_time(cycle_times),
+                "label": [self.label for _ in completions],
+            }
         )
+
+    @property
+    def label(self) -> str:
+        return "Rolling average cycle time (days)"
+
+    @property
+    def color(self) -> str:
+        return "green"
+
+    @property
+    def width(self) -> int:
+        return 3
