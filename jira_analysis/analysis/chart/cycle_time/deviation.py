@@ -59,10 +59,11 @@ class CycleTimeDeviationPlot(Plot):
 def _get_standard_deviations(
     cycle_times: List[CycleTime],
 ) -> Tuple[Tuple[float, ...], Tuple[float, ...]]:
-    rolling_cycle_times = rolling_average_cycle_time(c.cycle_time for c in cycle_times)
+    cycle_time_values = [c.cycle_time for c in cycle_times]
+    rolling_cycle_times = rolling_average_cycle_time(cycle_time_values)
 
     zipped_deviations = zip(
-        rolling_cycle_times, standard_deviations(c.cycle_time for c in cycle_times),
+        rolling_cycle_times, standard_deviations(cycle_time_values),
     )
     return cast(
         Tuple[Tuple[float, ...], Tuple[float, ...]],

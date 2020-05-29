@@ -34,17 +34,15 @@ def test_padded_sliding_window(test_func, test_input, expected_output):
 
 
 @pytest.mark.parametrize(
-    "cycle_times,expected_windows",
-    [([1, 1, 1, 1, 1, 5, 5, 5], [1, 1, 1, 1.8, 2.6, 3.4, 3.4, 3.4])],
-)
-def test_rolling_average_cycle_time(cycle_times, expected_windows):
-    assert rolling_average_cycle_time(cycle_times) == expected_windows
-
-
-@pytest.mark.parametrize(
-    "cycle_times,expected_windows",
+    "test_func,cycle_times,expected_windows",
     [
         (
+            rolling_average_cycle_time,
+            [1, 1, 1, 1, 1, 5, 5, 5],
+            [1, 1, 1, 1.8, 2.6, 3.4, 3.4, 3.4],
+        ),
+        (
+            standard_deviations,
             [1, 1, 1, 1, 1, 5, 5, 5],
             [
                 0.0,
@@ -56,10 +54,8 @@ def test_rolling_average_cycle_time(cycle_times, expected_windows):
                 1.9595917942265426,
                 1.9595917942265426,
             ],
-        )
+        ),
     ],
 )
-def test_standard_deviations(
-    cycle_times, expected_windows
-):  # Sanity check as we just pulled the numbers from std
-    assert standard_deviations(cycle_times) == expected_windows
+def test_specific_padding_funcs(test_func, cycle_times, expected_windows):
+    assert test_func(cycle_times) == expected_windows
