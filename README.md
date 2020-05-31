@@ -39,9 +39,17 @@ projects:
       - Review
     completed:
       - Done
+    analyse_issue_types:
+      - Story
+      - Bug
+      - Experiment
 ```
 
 You can configure multiple projects with different settings for In Progress and Completed. Simple add items to the list.
+
+The `analyse_issue_types` config is optional: use it to set issue types that have fixed or deliberately short times e.g.
+toil (that should take less than a day) or spikes (that are fixed lengths of time). This avoids messing up your cycle
+time charts.
 
 ## Running
 
