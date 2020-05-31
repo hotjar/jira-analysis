@@ -14,8 +14,18 @@ def padded_sliding_window(
 ) -> List[float]:
     if len(cycle_times) < 5:
         return [func(cycle_times) for _ in cycle_times]
-    sliding_windows = [func(window) for window in it.sliding_window(5, cycle_times)]
-    return [sliding_windows[0]] * 2 + sliding_windows + [sliding_windows[-1]] * 2
+    window_size = max(int(len(cycle_times) * 0.2), 5)
+    if window_size % 2 == 0:
+        window_size += 1
+    sliding_windows = [
+        func(window) for window in it.sliding_window(window_size, cycle_times)
+    ]
+    subwindow = int(window_size // 2)
+    return (
+        [sliding_windows[0]] * subwindow
+        + sliding_windows
+        + [sliding_windows[-1]] * subwindow
+    )
 
 
 rolling_average_cycle_time = partial(padded_sliding_window, mean)

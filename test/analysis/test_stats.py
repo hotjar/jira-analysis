@@ -9,6 +9,8 @@ from jira_analysis.analysis.stats import (
     standard_deviations,
 )
 
+from .helpers import integers
+
 
 @pytest.mark.parametrize(
     "start,end,ct",
@@ -24,9 +26,15 @@ def test_cycle_time(start, end, ct):
 @pytest.mark.parametrize(
     "test_func,test_input,expected_output",
     [
-        (sum, [1, 1, 1, 1, 1, 2, 2, 2], [5, 5, 5, 6, 7, 8, 8, 8,]),
+        (sum, [1, 1, 1, 1, 1, 2, 2, 2, 2, 3], [5, 5, 5, 6, 7, 8, 9, 11, 11, 11]),
         (sum, [1, 2, 3], [6, 6, 6]),
         (sum, [1, 1, 1, 1, 1], [5, 5, 5, 5, 5]),
+        (sum, list(integers(num_values=20)), [9, 9] + [9, 11, 10] * 5 + [9] * 3),
+        (
+            sum,
+            list(integers(end=5, num_values=30)),
+            [18] * 3 + [18, 20, 22, 24, 21] * 4 + [18, 20, 22] + [24] * 4,
+        ),
     ],
 )
 def test_padded_sliding_window(test_func, test_input, expected_output):
