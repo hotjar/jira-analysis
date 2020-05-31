@@ -21,6 +21,7 @@ class JiraTicket:
     description: str = attr.ib()
     status: str = attr.ib()
     changelog: List[StatusChange] = attr.ib()
+    issue_type: str = attr.ib()
 
 
 def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
@@ -45,6 +46,7 @@ def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
         if ticket_dict["fields"]["description"]
         else "",
         status=ticket_dict["fields"]["status"]["name"],
+        issue_type=ticket_dict["fields"]["issuetype"]["name"],
         changelog=changelog,
     )
 
@@ -56,6 +58,7 @@ def parse_json(ticket_dict: Dict[str, Any]) -> JiraTicket:
         updated=arrow.get(ticket_dict["updated"]).datetime,
         description=ticket_dict["description"],
         status=ticket_dict["status"],
+        issue_type=ticket_dict["issue_type"],
         changelog=[
             StatusChange(
                 created=arrow.get(cl["created"]).datetime,

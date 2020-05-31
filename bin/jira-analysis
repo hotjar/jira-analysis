@@ -57,7 +57,10 @@ def analyse(project, file_in, date_start: datetime, config: str):
     config_file = analysis_config(project, config)
     click.echo("Loading Jira tickets")
     data = json.load(file_in)
-    jira_tickets = [parse_jira_ticket_from_json(t) for t in data]
+    jira_tickets = (parse_jira_ticket_from_json(t) for t in data)
+    jira_tickets = (
+        jt for jt in jira_tickets if config_file.should_be_analysed(jt.issue_type)
+    )
     issues = (convert_jira_to_analysis(config_file, j) for j in jira_tickets)
     if date_start is not None:
         issues = (

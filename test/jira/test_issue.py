@@ -21,6 +21,7 @@ def valid_jira_json():
         "updated": "2020-01-30T15:01:05.000000",
         "description": "Test description",
         "status": "Done",
+        "issue_type": "Bug",
         "changelog": [
             {
                 "created": "2020-01-30T15:01:05.000000",
@@ -39,6 +40,7 @@ def jira_descriptions():
             "updated": "2020-01-30T15:01:05.000000",
             "status": {"name": "Done"},
             "description": {"type": "doc"},
+            "issuetype": {"name": "bug"},
         },
         "changelog": {
             "histories": [
@@ -128,6 +130,7 @@ def valid_jira_ticket():
         updated=datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),
         description="Test description",
         status="Done",
+        issue_type="Bug",
         changelog=[
             StatusChange(
                 created=datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),

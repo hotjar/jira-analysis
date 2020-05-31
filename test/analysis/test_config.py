@@ -15,34 +15,59 @@ def config():
     )
 
 
-def config_files():
-    return StringIO(
-        """projects:
-  PROJ:
-    key: PROJ
-    in_progress:
-      - In progress
-      - Review
-    completed:
-      - Done
-"""
-    )
+@pytest.mark.parametrize(
+    "test_input,expected_result", [("Done", True), ("In progress", False)]
+)
+def test_config_is_completed_status(test_input, expected_result, config):
+    assert config.is_completed_status(test_input) == expected_result
 
 
-def test_config_is_completed_status(config):
-    assert config.is_completed_status("Done")
+@pytest.mark.parametrize(
+    "test_input,expected_result", [("Done", False), ("In progress", True)]
+)
+def test_config_is_in_progress_status(test_input, expected_result, config):
+    assert config.is_in_progress_status(test_input) == expected_result
 
 
-def test_config_is_completed_status_false(config):
-    assert not config.is_completed_status("In progress")
-
-
-def test_config_is_in_progress_status(config):
-    assert config.is_in_progress_status("In progress")
-
-
-def test_config_is_in_progress_status_false(config):
-    assert not config.is_in_progress_status("Backlog")
+@pytest.mark.parametrize(
+    "test_config,test_input,expected_result",
+    [
+        (
+            Config(
+                project="PROJ",
+                completed={"Done"},
+                in_progress={"In progress", "Review"},
+                analyse_issue_types=None,
+            ),
+            "Bug",
+            True,
+        ),
+        (
+            Config(
+                project="PROJ",
+                completed={"Done"},
+                in_progress={"In progress", "Review"},
+                analyse_issue_types={"Story", "Task"},
+            ),
+            "Story",
+            True,
+        ),
+        (
+            Config(
+                project="PROJ",
+                completed={"Done"},
+                in_progress={"In progress", "Review"},
+                analyse_issue_types={"Story", "Task"},
+            ),
+            "Bug",
+            False,
+        ),
+    ],
+)
+def test_should_be_analysed(
+    test_config: Config, test_input: str, expected_result: bool
+):
+    assert test_config.should_be_analysed(test_input) == expected_result
 
 
 @pytest.mark.parametrize(
