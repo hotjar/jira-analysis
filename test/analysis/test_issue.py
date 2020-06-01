@@ -6,6 +6,7 @@ from jira_analysis.analysis.config import Config
 from jira_analysis.analysis.issue import Issue, TicketStatus, create_issue_with_config
 
 
+@pytest.fixture
 def config():
     return Config(
         project="PROJ",
@@ -56,14 +57,8 @@ def issue_props():
 
 
 @pytest.mark.parametrize(
-    "config,issue_props,issue",
-    list(
-        zip(
-            [config(), config()],
-            issue_props(),
-            [completed_issue(), in_progress_issue()],
-        )
-    ),
+    "issue_props,issue",
+    list(zip(issue_props(), [completed_issue(), in_progress_issue()],)),
 )
-def test_create_issue_with_config(config, issue_props, issue):
+def test_create_issue_with_config(issue_props, issue, config):
     assert create_issue_with_config(config, **issue_props) == issue
