@@ -14,4 +14,4 @@ pytest-cov
 pyyaml
 requests
 toolz
-validate_email
+validators

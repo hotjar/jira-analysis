@@ -11,9 +11,9 @@ from jira_analysis.jira.network import (
     get_issues,
     get_project,
 )
-from jira_analysis.jira.auth import JiraConfig
-from jira_analysis.jira.issue import JiraTicket
-from jira_analysis.jira.project import JiraProject
+from jira_analysis.jira.issue import JiraTicket, StatusChange
+
+from .fixtures import jira_config, jira_project, jira_ticket
 
 
 class _MockNetwork(INetworkService):
@@ -37,34 +37,38 @@ class _MockNetwork(INetworkService):
         assert self.assigned_auth == auth
 
 
-def mock_network(return_value):
-    @pytest.fixture
+def mock_network(return_value, asfixture=True):
     def network():
         return _MockNetwork(return_value)
 
-    return network
+    return pytest.fixture(network) if asfixture else network
 
 
-issue_network = mock_network(
-    [
-        {
-            "maxResults": 50,
-            "total": 1,
-            "issues": [
-                {
-                    "key": "KEY-123",
-                    "fields": {
-                        "created": "2020-01-10T09:01:10.000000",
-                        "updated": "2020-01-30T15:01:05.000000",
-                        "status": {"name": "Done"},
-                        "description": {"type": "doc", "content": []},
+_issues_for_mock_network = [
+    {
+        "maxResults": 50,
+        "total": 1,
+        "issues": [
+            {
+                "key": "PROJ-123",
+                "fields": {
+                    "created": "2020-01-10T09:01:10.000000",
+                    "updated": "2020-01-30T15:01:05.000000",
+                    "status": {"name": "Done"},
+                    "description": {
+                        "type": "doc",
+                        "content": [{"type": "text", "text": "Test description"}],
                     },
-                    "changelog": {"histories": []},
-                }
-            ],
-        }
-    ]
-)
+                    "issuetype": {"name": "Story"},
+                },
+                "changelog": {"histories": []},
+            }
+        ],
+    }
+]
+
+issue_network = mock_network(_issues_for_mock_network)
+issue_network_direct = mock_network(_issues_for_mock_network, asfixture=False)
 
 project_network = mock_network([{"id": 10, "key": "PROJ"}])
 
@@ -75,12 +79,16 @@ multiple_page_issues = mock_network(
             "total": 2,
             "issues": [
                 {
-                    "key": "KEY-123",
+                    "key": "PROJ-123",
                     "fields": {
                         "created": "2020-01-10T09:01:10.000000",
                         "updated": "2020-01-30T15:01:05.000000",
                         "status": {"name": "Done"},
-                        "description": {"type": "doc", "content": []},
+                        "description": {
+                            "type": "doc",
+                            "content": [{"type": "text", "text": "Test description"}],
+                        },
+                        "issuetype": {"name": "Story"},
                     },
                     "changelog": {"histories": []},
                 }
@@ -91,53 +99,58 @@ multiple_page_issues = mock_network(
             "total": 2,
             "issues": [
                 {
-                    "key": "KEY-456",
+                    "key": "PROJ-456",
                     "fields": {
                         "created": "2020-01-20T09:01:10.000000",
                         "updated": "2020-02-10T15:01:05.000000",
                         "status": {"name": "To do"},
-                        "description": {"type": "doc", "content": []},
+                        "description": {
+                            "type": "doc",
+                            "content": [{"type": "text", "text": "Test description"}],
+                        },
+                        "issuetype": {"name": "Bug"},
                     },
                     "changelog": {"histories": []},
                 }
             ],
         },
-    ]
+    ],
+    asfixture=False,
 )
 
 
-@pytest.fixture
-def jira_project():
-    return JiraProject(key="PROJ", id=10)
+def get_jira_ticket(asfixture=True, **overrides):
+    ticket_attrs = {
+        "key": "PROJ-123",
+        "created": datetime(2020, 1, 10, 9, 1, 10, tzinfo=tzutc()),
+        "updated": datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),
+        "description": "Test description",
+        "issue_type": "Story",
+        "status": "Done",
+        "changelog": [
+            {
+                "status_from": "To do",
+                "status_to": "Done",
+                "created": datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),
+            }
+        ],
+    }
+    ticket_attrs.update(overrides)
+
+    def inner():
+        statuses = [StatusChange(**c) for c in ticket_attrs.pop("changelog")]
+        return JiraTicket(changelog=statuses, **ticket_attrs)
+
+    return pytest.fixture(inner) if asfixture else inner
 
 
-@pytest.fixture
-def auth():
-    return JiraConfig(email="test@example.com", token="123")
-
-
-@pytest.fixture
-def jira_ticket_key_123():
-    return JiraTicket(
-        key="KEY-123",
-        created=datetime(2020, 1, 10, 9, 1, 10, tzinfo=tzutc()),
-        updated=datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),
-        description="",
-        status="Done",
-        changelog=[],
-    )
-
-
-@pytest.fixture
-def jira_ticket_key_456():
-    return JiraTicket(
-        key="KEY-456",
-        created=datetime(2020, 1, 20, 9, 1, 10, tzinfo=tzutc()),
-        updated=datetime(2020, 2, 10, 15, 1, 5, tzinfo=tzutc()),
-        description="",
-        status="To do",
-        changelog=[],
-    )
+jira_ticket_key_123 = get_jira_ticket()
+jira_ticket_key_456 = get_jira_ticket(
+    key="PROJ-456",
+    changelog=[],
+    issue_type="Bug",
+    updated=datetime(2020, 2, 10, 15, 1, 5, tzinfo=tzutc()),
+)
 
 
 @pytest.fixture
@@ -151,53 +164,67 @@ def network_service():
     return ns
 
 
-def test_get_issues(jira_project, jira_ticket_key_123, auth, issue_network):
-    issues = get_issues(auth, jira_project, issue_network)
-    assert issues == [jira_ticket_key_123]
+@pytest.mark.parametrize(
+    "network,expected_output",
+    [
+        (issue_network_direct(), [get_jira_ticket(changelog=[], asfixture=False)()]),
+        (
+            multiple_page_issues(),
+            [
+                get_jira_ticket(asfixture=False, changelog=[])(),
+                get_jira_ticket(
+                    asfixture=False,
+                    key="PROJ-456",
+                    changelog=[],
+                    issue_type="Bug",
+                    created=datetime(2020, 1, 20, 9, 1, 10, tzinfo=tzutc()),
+                    updated=datetime(2020, 2, 10, 15, 1, 5, tzinfo=tzutc()),
+                    status="To do",
+                )(),
+            ],
+        ),
+    ],
+)
+def test_get_issues(network, expected_output, jira_project, jira_config):
+    issues = get_issues(jira_config, jira_project, network)
+    assert issues == expected_output
 
 
-def test_get_issues_uses_correct_endpoint(jira_project, auth, issue_network):
-    get_issues(auth, jira_project, issue_network)
+def test_get_issues_uses_correct_endpoint(jira_project, jira_config, issue_network):
+    get_issues(jira_config, jira_project, issue_network)
 
     issue_network.check_url(
-        "https://hotjar.atlassian.net/rest/api/3/search?"
+        "https://jira.example.com/rest/api/3/search?"
         "jql=project%3DPROJ&expand=changelog"
     )
 
 
-def test_get_issues_multiple_pages(
-    jira_project, jira_ticket_key_123, jira_ticket_key_456, auth, multiple_page_issues
-):
-    issues = get_issues(auth, jira_project, multiple_page_issues)
-    assert issues == [jira_ticket_key_123, jira_ticket_key_456]
+def test_get_issues_uses_auth(jira_config, project_network):
+    get_project(jira_config, "PROJ", project_network)
+    project_network.check_auth(jira_config)
 
 
-def test_get_issues_uses_auth(auth, project_network):
-    get_project(auth, "PROJ", project_network)
-    project_network.check_auth(auth)
-
-
-def test_get_project(jira_project, auth, project_network):
-    project = get_project(auth, "PROJ", project_network)
+def test_get_project(jira_project, jira_config, project_network):
+    project = get_project(jira_config, "PROJ", project_network)
     assert project == jira_project
 
 
-def test_get_project_uses_correct_endpoint(auth, project_network):
-    get_project(auth, "PROJ", project_network)
+def test_get_project_uses_correct_endpoint(jira_config, project_network):
+    get_project(jira_config, "PROJ", project_network)
     project_network.check_url("https://hotjar.atlassian.net/rest/api/3/project/PROJ")
 
 
-def get_project_uses_auth(auth, project_network):
-    get_project(auth, "PROJ", project_network)
-    project_network.check_auth(auth)
+def get_project_uses_auth(jira_config, project_network):
+    get_project(jira_config, "PROJ", project_network)
+    project_network.check_auth(jira_config)
 
 
-def test_network_service_get(auth, network_service):
-    assert network_service.get("https://example.com", auth) == {}
+def test_network_service_get(jira_config, network_service):
+    assert network_service.get("https://example.com", jira_config) == {}
 
 
-def test_network_service_get_calls_underlying_get(auth, network_service):
-    network_service.get("https://example.com", auth)
+def test_network_service_get_calls_underlying_get(jira_config, network_service):
+    network_service.get("https://example.com", jira_config)
     network_service.requests.get.assert_called_once_with(
-        "https://example.com", auth=(auth.email, auth.token)
+        "https://example.com", auth=(jira_config.email, jira_config.token)
     )

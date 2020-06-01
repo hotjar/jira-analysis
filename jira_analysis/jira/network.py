@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-import attr
 import requests
 from typing import List
 from urllib.parse import urlencode, urljoin
@@ -21,7 +20,7 @@ class NetworkService(INetworkService):
     requests = requests
 
     def get(self, url: str, auth: JiraConfig) -> dict:
-        return self.requests.get(url, auth=attr.astuple(auth)).json()
+        return self.requests.get(url, auth=(auth.email, auth.token)).json()
 
 
 _DEFAULT_NETWORK = NetworkService()
@@ -33,7 +32,12 @@ def get_issues(
     network: INetworkService = _DEFAULT_NETWORK,
 ) -> List[JiraTicket]:
     issues = []
-    jira_url = urljoin(_JIRA_URL_BASE, "search")
+    jira_url = urljoin(
+        config.jira_url
+        if config.jira_url.startswith("http")
+        else f"https://{config.jira_url}",
+        "rest/api/3/search",
+    )
     query = urlencode({"jql": "project={}".format(project.key), "expand": "changelog"})
     response = network.get("{}?{}".format(jira_url, query), auth=config)
     page_size, total = (

@@ -1,26 +1,38 @@
 import attr
-from typing import Dict, IO, TypeVar, Type
-from validate_email import validate_email
-from yaml import safe_load
+import validators
 
-T = TypeVar("T", bound="Parent")
+from typing import Dict, IO
+from yaml import safe_load
 
 
 @attr.s(frozen=True)
 class JiraConfig:
     email: str = attr.ib()
     token: str = attr.ib()
+    jira_url: str = attr.ib()
 
     @email.validator
-    def valid_email_address(self, attribute: str, value: str) -> None:
-        if not validate_email(value):
-            raise ValueError(f"Invalid {attribute} format: {value}")
+    def valid_email_address(self, attribute, value: str) -> None:
+        if not validators.email(value):
+            _invalid_format(attribute, value)
 
-    @classmethod
-    def from_credentials(cls: Type[T], credentials: Dict[str, Dict[str, str]]) -> T:
-        return cls(**credentials["jira_credentials"])
+    @jira_url.validator
+    def valid_hostname(self, attribute, value: str) -> None:
+        to_check = value
+        if not value.startswith("http"):
+            to_check = f"https://{value}"
+        if not validators.url(to_check):
+            _invalid_format(attribute, value)
+
+
+def _from_credentials(credentials: Dict[str, Dict[str, str]]) -> JiraConfig:
+    return JiraConfig(**credentials["jira_credentials"])
 
 
 def get_config(credentials_file: IO) -> JiraConfig:
     credentials = safe_load(credentials_file)
-    return JiraConfig.from_credentials(credentials)
+    return _from_credentials(credentials)
+
+
+def _invalid_format(attribute, value):
+    raise ValueError(f"Invalid {attribute.name} format: '{value}'.")

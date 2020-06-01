@@ -26,6 +26,7 @@ def jira_ticket():
         updated=datetime(2020, 5, 20, 5, 1, 2),
         description="Test issue",
         status="Done",
+        issue_type="Story",
         changelog=[
             StatusChange(
                 created=datetime(2020, 5, 11, 2, 2, 2),
