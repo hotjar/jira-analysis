@@ -5,9 +5,9 @@ import click
 import json
 from datetime import datetime
 
-from jira_analysis.analysis.config import get_config as analysis_config
-from jira_analysis.analysis.chart.ticket_control import generate_control_chart
-from jira_analysis.conversions.analysis import convert_jira_to_analysis
+from jira_analysis.cycle_time.config import get_config as analysis_config
+from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
+from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.file_handlers import json_handler
 from jira_analysis.jira.auth import get_config as jira_config
 from jira_analysis.jira.issue import parse_json as parse_jira_ticket_from_json

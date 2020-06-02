@@ -4,7 +4,7 @@ from datetime import datetime
 
 from jira_analysis.cycle_time.config import Config
 from jira_analysis.cycle_time.issue import Issue, TicketStatus
-from jira_analysis.conversions.cycle_time import convert_jira_to_analysis
+from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.jira.issue import JiraTicket, StatusChange
 
 
@@ -54,5 +54,5 @@ def analysis_ticket():
     )
 
 
-def test_convert_jira_to_analysis(config, jira_ticket, analysis_ticket):
-    assert convert_jira_to_analysis(config, jira_ticket) == analysis_ticket
+def test_convert_jira_to_cycle_time(config, jira_ticket, analysis_ticket):
+    assert convert_jira_to_cycle_time(config, jira_ticket) == analysis_ticket
