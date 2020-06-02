@@ -6,7 +6,7 @@ from datetime import date
 from operator import attrgetter
 from typing import List, Tuple, cast
 
-from jira_analysis.analysis.cycle_time import CycleTime
+from jira_analysis.cycle_time.cycle_time import CycleTime
 
 
 def sort_cycle_times(cycle_times: List[CycleTime]) -> List[CycleTime]:

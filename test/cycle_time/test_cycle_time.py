@@ -1,12 +1,12 @@
 import pytest
 from datetime import datetime, date
 
-from jira_analysis.analysis.cycle_time import (
+from jira_analysis.cycle_time.cycle_time import (
     CycleTime,
     IssueNotComplete,
     get_cycle_time,
 )
-from jira_analysis.analysis.issue import Issue, TicketStatus
+from jira_analysis.cycle_time.issue import Issue, TicketStatus
 
 
 @pytest.fixture

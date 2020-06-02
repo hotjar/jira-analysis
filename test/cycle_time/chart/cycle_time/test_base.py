@@ -2,7 +2,7 @@ import pytest
 
 from unittest import mock
 
-from jira_analysis.analysis.chart.cycle_time.base import BaseCycleTimeLinePlot
+from jira_analysis.cycle_time.chart.cycle_time.base import BaseCycleTimeLinePlot
 
 from .helpers import chart
 

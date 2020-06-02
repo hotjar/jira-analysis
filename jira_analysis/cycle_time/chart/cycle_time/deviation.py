@@ -4,9 +4,12 @@ from bokeh.models import VArea
 from bokeh.models.sources import DataSource
 from typing import List, Tuple, Type, cast
 
-from jira_analysis.analysis.cycle_time import CycleTime
-from jira_analysis.analysis.stats import rolling_average_cycle_time, standard_deviations
-from jira_analysis.analysis.chart.base import IChart, Plot
+from jira_analysis.cycle_time.cycle_time import CycleTime
+from jira_analysis.cycle_time.stats import (
+    rolling_average_cycle_time,
+    standard_deviations,
+)
+from jira_analysis.cycle_time.chart.base import IChart, Plot
 
 from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit

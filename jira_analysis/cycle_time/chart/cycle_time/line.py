@@ -4,8 +4,8 @@ from bokeh.models.sources import DataSource
 from numpy import mean
 from typing import List, Type
 
-from jira_analysis.analysis.cycle_time import CycleTime
-from jira_analysis.analysis.stats import rolling_average_cycle_time
+from jira_analysis.cycle_time.cycle_time import CycleTime
+from jira_analysis.cycle_time.stats import rolling_average_cycle_time
 
 from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit

@@ -3,8 +3,8 @@ from bokeh.models.sources import ColumnDataSource
 from operator import attrgetter
 from typing import List, Type
 
-from jira_analysis.analysis.cycle_time import CycleTime, get_cycle_time
-from jira_analysis.analysis.issue import Issue
+from jira_analysis.cycle_time.cycle_time import CycleTime, get_cycle_time
+from jira_analysis.cycle_time.issue import Issue
 
 from .base import Axis, Chart, IChart
 from .cycle_time.deviation import CycleTimeDeviationPlot

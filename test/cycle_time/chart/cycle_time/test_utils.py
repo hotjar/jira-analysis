@@ -2,8 +2,8 @@ import pytest
 
 from datetime import date
 
-from jira_analysis.analysis.cycle_time import CycleTime
-from jira_analysis.analysis.chart.cycle_time.utils import sort_cycle_times, unsplit
+from jira_analysis.cycle_time.cycle_time import CycleTime
+from jira_analysis.cycle_time.chart.cycle_time.utils import sort_cycle_times, unsplit
 
 
 @pytest.mark.parametrize(

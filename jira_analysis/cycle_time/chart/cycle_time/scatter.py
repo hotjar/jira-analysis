@@ -4,8 +4,8 @@ from bokeh.models.sources import DataSource
 from collections import Counter
 from typing import List, Type
 
-from jira_analysis.analysis.chart.base import IChart, Plot
-from jira_analysis.analysis.cycle_time import CycleTime
+from jira_analysis.cycle_time.chart.base import IChart, Plot
+from jira_analysis.cycle_time.cycle_time import CycleTime
 from .utils import sort_cycle_times, unsplit
 
 

@@ -3,9 +3,9 @@ import pytest
 from datetime import datetime
 from unittest import mock
 
-from jira_analysis.analysis.issue import Issue, TicketStatus
-from jira_analysis.analysis.chart.base import Chart
-from jira_analysis.analysis.chart.ticket_control import generate_control_chart
+from jira_analysis.cycle_time.issue import Issue, TicketStatus
+from jira_analysis.cycle_time.chart.base import Chart
+from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
 
 
 @pytest.fixture

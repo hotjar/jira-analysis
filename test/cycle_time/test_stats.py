@@ -2,7 +2,7 @@ import pytest
 
 from datetime import date
 
-from jira_analysis.analysis.stats import (
+from jira_analysis.cycle_time.stats import (
     cycle_time,
     padded_sliding_window,
     rolling_average_cycle_time,

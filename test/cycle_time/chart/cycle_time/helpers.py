@@ -2,7 +2,7 @@ import pytest
 
 from unittest import mock
 
-from jira_analysis.analysis.chart.base import IChart
+from jira_analysis.cycle_time.chart.base import IChart
 
 
 class _MockChart(IChart):

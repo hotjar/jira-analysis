@@ -1,6 +1,6 @@
 from typing import Iterator
 
-from jira_analysis.analysis.config import Config
+from jira_analysis.cycle_time.config import Config
 
 
 def integers(start=1, end=3, num_values=10) -> Iterator[int]:

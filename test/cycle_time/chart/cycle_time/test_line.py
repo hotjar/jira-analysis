@@ -3,8 +3,8 @@ import pytest
 from datetime import date
 from unittest import mock
 
-from jira_analysis.analysis.cycle_time import CycleTime
-from jira_analysis.analysis.chart.cycle_time.line import (
+from jira_analysis.cycle_time.cycle_time import CycleTime
+from jira_analysis.cycle_time.chart.cycle_time.line import (
     AverageCycleTimePlot,
     RollingAverageCycleTimePlot,
 )

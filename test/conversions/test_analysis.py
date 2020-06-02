@@ -2,9 +2,9 @@ import pytest
 
 from datetime import datetime
 
-from jira_analysis.analysis.config import Config
-from jira_analysis.analysis.issue import Issue, TicketStatus
-from jira_analysis.conversions.analysis import convert_jira_to_analysis
+from jira_analysis.cycle_time.config import Config
+from jira_analysis.cycle_time.issue import Issue, TicketStatus
+from jira_analysis.conversions.cycle_time import convert_jira_to_analysis
 from jira_analysis.jira.issue import JiraTicket, StatusChange
 
 
