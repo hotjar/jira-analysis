@@ -62,7 +62,7 @@ jira-analysis fetch <PROJECT_KEY> <PROJECT_KEY>.json -c credentials.yaml
 Once this is done, you can analyse the tickets:
 
 ```
-jira-analysis analyse <PROJECT_KEY> <PROJECT_KEY>.json <PROJECT_KEY>.html -c config.yaml
+jira-analysis analyse <PROJECT_KEY> <PROJECT_KEY>.json -c config.yaml
 ```
 
 Note the `-c` argument that points to the `credentials.yaml` file you created for Jira and the `config.yaml` file for
