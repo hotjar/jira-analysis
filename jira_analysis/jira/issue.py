@@ -1,18 +1,32 @@
 import arrow
 import attr
 
+from enum import Enum
 from typing import Any, Dict, List
 from datetime import datetime
 
 
-@attr.s
+@attr.s(frozen=True)
 class StatusChange:
     created: datetime = attr.ib()
     status_from: str = attr.ib()
     status_to: str = attr.ib()
 
 
-@attr.s
+class LinkDirection(Enum):
+    INBOUND = "inbound"
+    OUTBOUND = "outbound"
+
+
+@attr.s(frozen=True)
+class LinkedTicket:
+    key: str = attr.ib()
+    link_type: str = attr.ib()
+    link_direction: LinkDirection = attr.ib()
+    issue_type: str = attr.ib()
+
+
+@attr.s(frozen=True)
 class JiraTicket:
     key: str = attr.ib()
     created: datetime = attr.ib()
@@ -20,8 +34,10 @@ class JiraTicket:
 
     description: str = attr.ib()
     status: str = attr.ib()
-    changelog: List[StatusChange] = attr.ib()
     issue_type: str = attr.ib()
+
+    changelog: List[StatusChange] = attr.ib()
+    related_issues: List[LinkedTicket] = attr.ib()
 
 
 def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
@@ -38,6 +54,25 @@ def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
                 )
             )
 
+    related_issues = []
+    for item in ticket_dict["fields"]["issuelinks"]:
+        if "inwardIssue" in item:
+            direction = LinkDirection.INBOUND
+            issue = item['inwardIssue']
+        elif "outwardIssue" in item:
+            direction = LinkDirection.OUTBOUND
+            issue = item['outwardIssue']
+        else:
+            continue
+        related_issues.append(
+            LinkedTicket(
+                key=issue["key"],
+                issue_type=issue["issuetype"]["name"],
+                link_type=item["type"]["name"],
+                link_direction=direction,
+            )
+        )
+
     return JiraTicket(
         key=ticket_dict["key"],
         created=arrow.get(ticket_dict["fields"]["created"]).datetime,
@@ -48,6 +83,7 @@ def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
         status=ticket_dict["fields"]["status"]["name"],
         issue_type=ticket_dict["fields"]["issuetype"]["name"],
         changelog=changelog,
+        related_issues=related_issues,
     )
 
 
@@ -66,6 +102,15 @@ def parse_json(ticket_dict: Dict[str, Any]) -> JiraTicket:
                 status_to=cl["status_to"],
             )
             for cl in ticket_dict["changelog"]
+        ],
+        related_issues=[
+            LinkedTicket(
+                key=lt["key"],
+                link_direction=LinkDirection(lt["link_direction"]),
+                link_type=lt["link_type"],
+                issue_type=lt["issue_type"],
+            )
+            for lt in ticket_dict["related_issues"]
         ],
     )
 

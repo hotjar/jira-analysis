@@ -60,6 +60,7 @@ _issues_for_mock_network = [
                         "content": [{"type": "text", "text": "Test description"}],
                     },
                     "issuetype": {"name": "Story"},
+                    "issuelinks": [],
                 },
                 "changelog": {"histories": []},
             }
@@ -89,6 +90,7 @@ multiple_page_issues = mock_network(
                             "content": [{"type": "text", "text": "Test description"}],
                         },
                         "issuetype": {"name": "Story"},
+                        "issuelinks": [],
                     },
                     "changelog": {"histories": []},
                 }
@@ -109,6 +111,7 @@ multiple_page_issues = mock_network(
                             "content": [{"type": "text", "text": "Test description"}],
                         },
                         "issuetype": {"name": "Bug"},
+                        "issuelinks": [],
                     },
                     "changelog": {"histories": []},
                 }
@@ -134,6 +137,7 @@ def get_jira_ticket(asfixture=True, **overrides):
                 "created": datetime(2020, 1, 30, 15, 1, 5, tzinfo=tzutc()),
             }
         ],
+        "related_issues": [],
     }
     ticket_attrs.update(overrides)
 

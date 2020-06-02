@@ -7,6 +7,8 @@ from dateutil.tz import tzutc
 
 from jira_analysis.jira.issue import (
     JiraTicket,
+    LinkedTicket,
+    LinkDirection,
     StatusChange,
     parse_jira_ticket,
     parse_json,
@@ -29,6 +31,20 @@ def valid_jira_json():
                 "status_to": "Done",
             }
         ],
+        "related_issues": [
+            {
+                "key": "KEY-1",
+                "link_type": "Caused",
+                "issue_type": "Bug",
+                "link_direction": "inbound",
+            },
+            {
+                "key": "KEY-5",
+                "link_type": "Blocked",
+                "issue_type": "Story",
+                "link_direction": "outbound",
+            },
+        ],
     }
 
 
@@ -40,7 +56,17 @@ def jira_descriptions():
             "updated": "2020-01-30T15:01:05.000000",
             "status": {"name": "Done"},
             "description": {"type": "doc"},
-            "issuetype": {"name": "bug"},
+            "issuetype": {"name": "Bug"},
+            "issuelinks": [
+                {
+                    "inwardIssue": {"key": "KEY-1", "issuetype": {"name": "Bug"}},
+                    "type": {"name": "Caused"},
+                },
+                {
+                    "outwardIssue": {"key": "KEY-5", "issuetype": {"name": "Story"}},
+                    "type": {"name": "Blocked"},
+                },
+            ],
         },
         "changelog": {
             "histories": [
@@ -137,6 +163,20 @@ def valid_jira_ticket():
                 status_from="To do",
                 status_to="Done",
             )
+        ],
+        related_issues=[
+            LinkedTicket(
+                key="KEY-1",
+                link_type="Caused",
+                issue_type="Bug",
+                link_direction=LinkDirection.INBOUND,
+            ),
+            LinkedTicket(
+                key="KEY-5",
+                link_type="Blocked",
+                issue_type="Story",
+                link_direction=LinkDirection.OUTBOUND,
+            ),
         ],
     )
 

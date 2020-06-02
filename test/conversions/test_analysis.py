@@ -39,6 +39,7 @@ def jira_ticket():
                 status_to="Done",
             ),
         ],
+        related_issues=[],
     )
 
 

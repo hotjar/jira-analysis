@@ -37,4 +37,5 @@ def jira_ticket(jira_json):
                 created=datetime(2020, 1, 15, 9, 5, 10, tzinfo=tzutc()),
             )
         ],
+        related_issues=[],
     )
