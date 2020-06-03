@@ -30,10 +30,10 @@ jobs:
         flake8 jira_analysis/ --count --show-source --statistics
     - name: Lint tests
       run: |
-      flake8 test/ --count --show-source --extend-ignore=F811,F401
+        flake8 test/ --count --show-source --extend-ignore=F811,F401
     - name: Validate with mypy
       run: |
-        mypy jira_analysis/*
+        mypy --strict jira_analysis/*
     - name: Test with pytest
       run: |
         pytest test/

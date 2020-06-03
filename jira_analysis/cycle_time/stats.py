@@ -6,7 +6,7 @@ from typing import Callable, Iterable, List
 
 
 def cycle_time(start: date, end: date) -> float:
-    return busday_count(start, end)
+    return float(busday_count(start, end))
 
 
 def padded_sliding_window(

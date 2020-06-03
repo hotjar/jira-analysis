@@ -31,7 +31,7 @@ class Config:
         )
 
 
-def get_config(project_key: str, config_file: IO) -> Config:
+def get_config(project_key: str, config_file: IO[str]) -> Config:
     config = safe_load(config_file)
 
     project = config["projects"][project_key]

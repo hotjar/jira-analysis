@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 import requests
-from typing import List
+from typing import Any, Dict, List, cast
 from urllib.parse import urlencode, urljoin
 
 from .auth import JiraConfig
@@ -12,15 +12,17 @@ _JIRA_URL_BASE = "https://hotjar.atlassian.net/rest/api/3/"
 
 class INetworkService(ABC):
     @abstractmethod
-    def get(self, url: str, auth: JiraConfig) -> dict:
+    def get(self, url: str, auth: JiraConfig) -> Dict[str, Any]:
         pass
 
 
 class NetworkService(INetworkService):
     requests = requests
 
-    def get(self, url: str, auth: JiraConfig) -> dict:
-        return self.requests.get(url, auth=(auth.email, auth.token)).json()
+    def get(self, url: str, auth: JiraConfig) -> Dict[str, Any]:
+        return cast(
+            Dict[str, Any], self.requests.get(url, auth=(auth.email, auth.token)).json()
+        )
 
 
 _DEFAULT_NETWORK = NetworkService()
