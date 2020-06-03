@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime
 
 from jira_analysis.cycle_time.config import Config
-from jira_analysis.cycle_time.issue import Issue, TicketStatus
+from jira_analysis.cycle_time.issue import Issue
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.jira.issue import JiraTicket, StatusChange
 
@@ -50,7 +50,7 @@ def analysis_ticket():
         created=datetime(2020, 5, 10, 1, 2, 3),
         completed=datetime(2020, 5, 20, 5, 1, 2),
         started=datetime(2020, 5, 11, 2, 2, 2),
-        status=TicketStatus.DONE,
+        status="Done",
     )
 
 

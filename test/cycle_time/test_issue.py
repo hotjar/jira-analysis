@@ -3,7 +3,7 @@ import pytest
 from datetime import datetime
 
 from jira_analysis.cycle_time.config import Config
-from jira_analysis.cycle_time.issue import Issue, TicketStatus, create_issue_with_config
+from jira_analysis.cycle_time.issue import Issue, create_issue_with_config
 
 
 @pytest.fixture
@@ -22,7 +22,7 @@ def completed_issue():
         created=datetime(2020, 5, 2, 12, 4, 1),
         started=datetime(2020, 5, 10, 9, 1, 0),
         completed=datetime(2020, 5, 16, 14, 10, 30),
-        status=TicketStatus.DONE,
+        status="Done",
     )
 
 
@@ -32,7 +32,7 @@ def in_progress_issue():
         created=datetime(2020, 5, 2, 12, 4, 1),
         started=datetime(2020, 5, 9, 9, 1, 0),
         completed=None,
-        status=TicketStatus.IN_PROGRESS,
+        status="In Progress",
     )
 
 

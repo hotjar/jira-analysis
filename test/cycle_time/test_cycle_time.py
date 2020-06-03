@@ -6,7 +6,7 @@ from jira_analysis.cycle_time.cycle_time import (
     IssueNotComplete,
     get_cycle_time,
 )
-from jira_analysis.cycle_time.issue import Issue, TicketStatus
+from jira_analysis.cycle_time.issue import Issue
 
 
 @pytest.fixture
@@ -21,7 +21,7 @@ def complete_issue():
         created=datetime(2020, 3, 1, 1, 4, 1),
         completed=datetime(2020, 4, 6, 12, 0, 12),
         started=datetime(2020, 4, 2, 12, 0, 12),
-        status=TicketStatus.DONE,
+        status="Done",
     )
 
 
@@ -32,7 +32,7 @@ def incomplete_issue():
         created=datetime(2020, 3, 1, 1, 4, 1),
         completed=None,
         started=datetime(2020, 4, 2, 12, 0, 12),
-        status=TicketStatus.IN_PROGRESS,
+        status="In progress",
     )
 
 
