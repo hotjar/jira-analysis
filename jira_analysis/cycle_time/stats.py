@@ -2,11 +2,11 @@ from datetime import date
 from functools import partial
 from numpy import busday_count, mean, std
 from toolz import itertoolz as it
-from typing import Callable, Iterable, List
+from typing import Callable, Iterable, List, cast
 
 
 def cycle_time(start: date, end: date) -> float:
-    return busday_count(start, end)
+    return float(busday_count(start, end))
 
 
 def padded_sliding_window(

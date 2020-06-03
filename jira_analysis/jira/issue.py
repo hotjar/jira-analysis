@@ -58,10 +58,10 @@ def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
     for item in ticket_dict["fields"]["issuelinks"]:
         if "inwardIssue" in item:
             direction = LinkDirection.INBOUND
-            issue = item['inwardIssue']
+            issue = item["inwardIssue"]
         elif "outwardIssue" in item:
             direction = LinkDirection.OUTBOUND
-            issue = item['outwardIssue']
+            issue = item["outwardIssue"]
         else:
             continue
         related_issues.append(
@@ -123,7 +123,7 @@ def _parse_description(doc: Dict[str, Any]) -> str:
             _parse_description(paragraph) for paragraph in doc["content"]
         )
     if doc["type"] == "text":
-        return doc["text"]
+        return str(doc["text"])
     if doc["type"] == "heading":
         return "{} {}".format(
             "#" * doc["attrs"]["level"],

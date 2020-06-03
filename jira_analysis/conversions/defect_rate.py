@@ -1,7 +1,7 @@
 from jira_analysis.jira.issue import JiraTicket
 
-from defect_rate.issue import Issue
+from jira_analysis.defect_rate.issue import Defect
 
 
-def create_issue_from_jira(jira_ticket: JiraTicket) -> Issue:
+def create_issue_from_jira(jira_ticket: JiraTicket) -> Defect:
     pass
