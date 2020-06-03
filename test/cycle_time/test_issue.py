@@ -51,14 +51,14 @@ def issue_props():
             "key": "PROJ-111",
             "created": datetime(2020, 5, 2, 12, 4, 1),
             "status": "In Progress",
-            "changelog": [("In Progress", datetime(2020, 5, 9, 9, 1, 0)),],
+            "changelog": [("In Progress", datetime(2020, 5, 9, 9, 1, 0))],
         },
     ]
 
 
 @pytest.mark.parametrize(
     "issue_props,issue",
-    list(zip(issue_props(), [completed_issue(), in_progress_issue()],)),
+    list(zip(issue_props(), [completed_issue(), in_progress_issue()])),
 )
 def test_create_issue_with_config(issue_props, issue, config):
     assert create_issue_with_config(config, **issue_props) == issue

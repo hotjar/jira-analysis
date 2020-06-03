@@ -64,7 +64,7 @@ def test_to_data_source(
     upper_deviations, lower_deviations = standard_deviations
     cycle_time_deviation_plot.to_data_source()
     cycle_time_deviation_plot.data_source.assert_called_once_with(
-        {"x": sorted_completions, "y1": upper_deviations, "y2": lower_deviations,}
+        {"x": sorted_completions, "y1": upper_deviations, "y2": lower_deviations}
     )
 
 

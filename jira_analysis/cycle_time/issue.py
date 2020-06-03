@@ -1,7 +1,6 @@
 import attr
 
 from datetime import datetime
-from enum import Enum
 from toolz import itertoolz as it
 from typing import Iterable, Optional, Tuple
 

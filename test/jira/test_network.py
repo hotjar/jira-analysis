@@ -13,7 +13,7 @@ from jira_analysis.jira.network import (
 )
 from jira_analysis.jira.issue import JiraTicket, StatusChange
 
-from .fixtures import jira_config, jira_project, jira_ticket
+from .fixtures import jira_config, jira_project, jira_ticket  # flake8: ignore
 
 
 class _MockNetwork(INetworkService):
