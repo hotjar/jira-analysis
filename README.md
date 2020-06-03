@@ -68,6 +68,12 @@ jira-analysis analyse <PROJECT_KEY> <PROJECT_KEY>.json -c config.yaml
 Note the `-c` argument that points to the `credentials.yaml` file you created for Jira and the `config.yaml` file for
 analysis.
 
+### Example output
+
+#### Control chart
+
+![Example Control Chart for Q2 2020 showing individual cycle times, average cycle time, rolling average cycle time and standard deviation](./doc/example_control_chart.png)
+
 ## Why?
 
 Jira is ridiculously customisable, to the point where it doesn't always easily support the reporting that you need in
