@@ -4,7 +4,7 @@ from datetime import datetime
 from toolz import itertoolz as it
 from typing import Iterable, Optional, Tuple
 
-from .config import Config
+from jira_analysis.config.config import Config
 
 
 @attr.s(frozen=True)

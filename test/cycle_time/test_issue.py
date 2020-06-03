@@ -2,7 +2,7 @@ import pytest
 
 from datetime import datetime
 
-from jira_analysis.cycle_time.config import Config
+from jira_analysis.config.config import Config
 from jira_analysis.cycle_time.issue import Issue, create_issue_with_config
 
 

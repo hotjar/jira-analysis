@@ -2,7 +2,7 @@ import pytest
 
 from io import StringIO
 
-from jira_analysis.cycle_time.config import Config, get_config
+from jira_analysis.config.config import Config, get_config
 
 
 @pytest.fixture

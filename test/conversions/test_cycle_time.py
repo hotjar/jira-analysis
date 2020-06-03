@@ -2,7 +2,7 @@ import pytest
 
 from datetime import datetime
 
-from jira_analysis.cycle_time.config import Config
+from jira_analysis.config.config import Config
 from jira_analysis.cycle_time.issue import Issue
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.jira.issue import JiraTicket, StatusChange
