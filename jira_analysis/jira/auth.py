@@ -1,7 +1,7 @@
 import attr
 import validators
 
-from typing import Any, Dict, IO
+from typing import Dict, IO
 from yaml import safe_load
 
 
