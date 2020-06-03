@@ -1,23 +1,10 @@
 import attr
 
 from datetime import datetime
-from enum import Enum
 from toolz import itertoolz as it
 from typing import Iterable, Optional, Tuple
 
 from .config import Config
-
-
-class TicketStatus(Enum):
-    BACKLOG = "Backlog"
-    TO_DO = "To Do"
-    IN_PROGRESS = "In Progress"
-    RUNNING = "Running"
-    BLOCKED = "Blocked"
-    READY_FOR_REVIEW = "Ready for Review"
-    REVIEW = "Review"
-    IN_REVIEW = "In Review"
-    DONE = "Done"
 
 
 @attr.s(frozen=True)
@@ -26,7 +13,7 @@ class Issue:
     created: datetime = attr.ib()
     completed: Optional[datetime] = attr.ib()
     started: Optional[datetime] = attr.ib()
-    status: TicketStatus = attr.ib()
+    status: str = attr.ib()
 
 
 def create_issue_with_config(
@@ -45,9 +32,5 @@ def create_issue_with_config(
             started = updated
 
     return Issue(
-        key=key,
-        created=created,
-        completed=completed,
-        started=started,
-        status=TicketStatus(status),
+        key=key, created=created, completed=completed, started=started, status=status,
     )

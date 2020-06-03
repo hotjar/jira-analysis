@@ -1,7 +1,7 @@
 from arrow import Arrow
 from bokeh.models.sources import ColumnDataSource
 from operator import attrgetter
-from typing import List, Type
+from typing import List
 
 from jira_analysis.cycle_time.cycle_time import CycleTime, get_cycle_time
 from jira_analysis.cycle_time.issue import Issue

@@ -27,7 +27,10 @@ jobs:
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
-        flake8 . --count --show-source --statistics
+        flake8 jira_analysis/ --count --show-source --statistics
+    - name: Lint tests
+      run: |
+      flake8 test/ --count --show-source --extend-ignore=F811,F401
     - name: Validate with mypy
       run: |
         mypy jira_analysis/*

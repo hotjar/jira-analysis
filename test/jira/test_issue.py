@@ -73,7 +73,7 @@ def jira_descriptions():
                 {
                     "created": "2020-01-30T15:01:05.000000",
                     "items": [
-                        {"field": "status", "fromString": "To do", "toString": "Done",},
+                        {"field": "status", "fromString": "To do", "toString": "Done"},
                         {"field": "comment"},
                     ],
                 }
@@ -114,15 +114,15 @@ def jira_descriptions():
         {
             "type": "orderedList",
             "content": [
-                {"content": [{"type": "text", "text": "Item"},]},
-                {"content": [{"type": "text", "text": "Item"},]},
+                {"content": [{"type": "text", "text": "Item"}]},
+                {"content": [{"type": "text", "text": "Item"}]},
             ],
         },
         {
             "type": "unorderedList",
             "content": [
-                {"content": [{"type": "text", "text": "Item"},]},
-                {"content": [{"type": "text", "text": "Item"},]},
+                {"content": [{"type": "text", "text": "Item"}]},
+                {"content": [{"type": "text", "text": "Item"}]},
             ],
         },
         {"type": "image", "content": []},

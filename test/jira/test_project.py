@@ -19,4 +19,3 @@ def jira_json():
 
 def test_parse_jira_project(jira_project, jira_json):
     assert parse_jira_project(jira_json) == jira_project
-
