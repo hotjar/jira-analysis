@@ -35,7 +35,7 @@ def create_issue_with_config(
         raise IssueNotComplete(key)
     return Issue(
         key=key,
-        completed=completed,
+        completed=completed.date(),
         defects=[Defect(key=k) for k, t in related if config.is_defect_type(t)],
     )
 
