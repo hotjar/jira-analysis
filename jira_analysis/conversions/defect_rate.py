@@ -1,17 +1,17 @@
-from jira_analysis.jira.issue import JiraTicket
+from jira_analysis.jira.issue import JiraTicket, LinkDirection
 
 from jira_analysis.config.config import Config
-from jira_analysis.defect_rate.issue import Defect, Issue
+from jira_analysis.defect_rate.issue import Issue, create_issue_with_config
 
 
 def convert_jira_to_defect(jira_ticket: JiraTicket, config: Config) -> Issue:
-    completed = min(
-        cl.created
-        for cl in jira_ticket.changelog
-        if config.is_completed_status(cl.status_to)
-    )
-    return Issue(
-        key=jira_ticket.key,
-        completed=completed,
-        defects=[Defect(key=ri.key) for ri in jira_ticket.related_issues],
+    return create_issue_with_config(
+        config,
+        jira_ticket.key,
+        [(cl.status_to, cl.created.date()) for cl in jira_ticket.changelog],
+        [
+            (lt.key, lt.issue_type)
+            for lt in jira_ticket.related_issues
+            if lt.link_direction is LinkDirection.OUTBOUND
+        ],
     )

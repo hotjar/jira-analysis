@@ -1,6 +1,6 @@
 import attr
 
-from datetime import date, datetime
+from datetime import date
 from typing import List, Tuple
 
 from jira_analysis.config.config import Config
@@ -20,14 +20,15 @@ class Issue:
 
 # Aliases to make the below type information more readable
 _STATUS_TO = str
-_STATUS_CHANGE = Tuple[_STATUS_TO, datetime]
 _ISSUE_KEY = str
 _ISSUE_TYPE = str
-_RELATED_ISSUE = Tuple[_ISSUE_KEY, _ISSUE_TYPE]
 
 
 def create_issue_with_config(
-    config: Config, key, changelog: List[_STATUS_CHANGE], related: List[_RELATED_ISSUE],
+    config: Config,
+    key: str,
+    changelog: List[Tuple[_STATUS_TO, date]],
+    related: List[Tuple[_ISSUE_KEY, _ISSUE_TYPE]],
 ) -> Issue:
     try:
         completed = min(t for c, t in changelog if config.is_completed_status(c))
@@ -35,7 +36,7 @@ def create_issue_with_config(
         raise IssueNotComplete(key)
     return Issue(
         key=key,
-        completed=completed.date(),
+        completed=completed,
         defects=[Defect(key=k) for k, t in related if config.is_defect_type(t)],
     )
 

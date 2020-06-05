@@ -34,7 +34,7 @@ def jira_ticket():
             LinkedTicket(
                 key="PROJ-444",
                 link_type="Cause",
-                link_direction=LinkDirection.INBOUND,
+                link_direction=LinkDirection.OUTBOUND,
                 issue_type="Bug",
             ),
             LinkedTicket(
@@ -63,8 +63,8 @@ def jira_ticket():
 def defect_issue():
     return Issue(
         key="PROJ-123",
-        completed=datetime(2020, 4, 20, 13, 4, 40),
-        defects=[Defect(key="PROJ-444")],
+        completed=date(2020, 4, 20),
+        defects=[Defect(key="PROJ-444"), Defect(key="PROJ-931")],
     )
 
 

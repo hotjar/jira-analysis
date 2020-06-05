@@ -32,10 +32,7 @@ from .fixtures import config
 def test_create_issue_with_config(test_related_issues, expected_output, config):
     assert (
         create_issue_with_config(
-            config,
-            "PROJ-123",
-            [("Done", datetime(2020, 5, 1, 10, 3, 1))],
-            test_related_issues,
+            config, "PROJ-123", [("Done", date(2020, 5, 1))], test_related_issues,
         )
         == expected_output
     )
@@ -44,6 +41,6 @@ def test_create_issue_with_config(test_related_issues, expected_output, config):
 def test_create_issue_with_config_raises_exception(config):
     with pytest.raises(IssueNotComplete) as exc:
         create_issue_with_config(
-            config, "PROJ-123", [("In Progress", datetime(2020, 5, 1, 10, 2, 1))], []
+            config, "PROJ-123", [("In Progress", date(2020, 5, 1))], []
         )
     assert exc.value.issue_key == "PROJ-123"
