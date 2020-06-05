@@ -13,6 +13,7 @@ def config():
         completed={"Done"},
         in_progress={"In Progress", "Review"},
         analyse_issue_types=None,
+        defect_types={"Bug"},
     )
 
 

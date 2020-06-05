@@ -11,6 +11,8 @@ from jira_analysis.jira.issue import (
 from jira_analysis.defect_rate.issue import Defect, Issue
 from jira_analysis.conversions.defect_rate import convert_jira_to_defect
 
+from .fixtures import config
+
 
 @pytest.fixture
 def jira_ticket():
@@ -66,5 +68,5 @@ def defect_issue():
     )
 
 
-def test_convert_jira_to_defect(jira_ticket, defect_issue):
-    assert convert_jira_to_defect(jira_ticket) == defect_issue
+def test_convert_jira_to_defect(config, jira_ticket, defect_issue):
+    assert convert_jira_to_defect(jira_ticket, config) == defect_issue
