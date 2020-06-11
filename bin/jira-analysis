@@ -7,8 +7,10 @@ from datetime import datetime
 from typing import IO
 
 from jira_analysis.config.config import get_config as analysis_config
-from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
+from jira_analysis.conversions.defect_rate import convert_jira_to_defect
+from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
+from jira_analysis.defect_rate.chart.defect import generate_defect_chart
 from jira_analysis.file_handlers import json_handler
 from jira_analysis.jira.auth import get_config as jira_config
 from jira_analysis.jira.issue import parse_json as parse_jira_ticket_from_json
@@ -24,7 +26,7 @@ def cli():
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
 @click.option("credentials", "-c", type=click.File("r"), help="Jira credentials file")
-def fetch(project: str, file_out, credentials: IO[str]):
+def fetch(project: str, file_out: IO[str], credentials: IO[str]):
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
     click.echo("Loading credentials")
@@ -47,7 +49,7 @@ def fetch(project: str, file_out, credentials: IO[str]):
 @click.option(
     "config", "-c", type=click.File(), help="Config file to use for analysis."
 )
-def analyse(project, file_in, date_start: datetime, config: IO[str]):
+def cycle_time(project, file_in: IO[str], date_start: datetime, config: IO[str]):
     """Analyse pre-fetched tickets from the given file_in.
 
     PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
@@ -69,8 +71,29 @@ def analyse(project, file_in, date_start: datetime, config: IO[str]):
             for i in issues
             if i.completed is not None and i.completed.date() >= date_start.date()
         )
-    click.echo("Building charts")
+    click.echo("Building Cycle Time chart")
     generate_control_chart(list(issues))
+
+
+@cli.command()
+@click.argument("project", type=str)
+@click.argument("file_in", type=click.File())
+@click.option("config", "-c", type=click.File(), help="Config file to use for analysis")
+def defect_rate(project: str, file_in: IO[str], config: IO[str]) -> None:
+    click.echo("Loading config")
+    config_file = analysis_config(project, config)
+    click.echo("Loading Jira tickets")
+    data = json.load(file_in)
+    jira_tickets = (parse_jira_ticket_from_json(t) for t in data)
+    jira_tickets = (
+        jt for jt in jira_tickets if config_file.should_be_analysed(jt.issue_type)
+    )
+    jira_tickets = (
+        jt for jt in jira_tickets if config_file.is_completed_status(jt.status)
+    )
+    issues = [convert_jira_to_defect(jt, config_file) for jt in jira_tickets]
+    click.echo("Building Defect Rate chart")
+    generate_defect_chart(issues)
 
 
 if __name__ == "__main__":
