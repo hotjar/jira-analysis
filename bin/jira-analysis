@@ -47,7 +47,7 @@ def fetch(project: str, file_out, credentials: IO[str]):
 @click.option(
     "config", "-c", type=click.File(), help="Config file to use for analysis."
 )
-def analyse(project, file_in, date_start: datetime, config: str):
+def analyse(project, file_in, date_start: datetime, config: IO[str]):
     """Analyse pre-fetched tickets from the given file_in.
 
     PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
@@ -62,7 +62,7 @@ def analyse(project, file_in, date_start: datetime, config: str):
     jira_tickets = (
         jt for jt in jira_tickets if config_file.should_be_analysed(jt.issue_type)
     )
-    issues = (convert_jira_to_analysis(config_file, j) for j in jira_tickets)
+    issues = (convert_jira_to_cycle_time(config_file, j) for j in jira_tickets)
     if date_start is not None:
         issues = (
             i
