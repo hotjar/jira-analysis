@@ -4,8 +4,9 @@ import attr
 import click
 import json
 from datetime import datetime
+from typing import IO
 
-from jira_analysis.cycle_time.config import get_config as analysis_config
+from jira_analysis.config.config import get_config as analysis_config
 from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.file_handlers import json_handler
@@ -23,7 +24,7 @@ def cli():
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
 @click.option("credentials", "-c", type=click.File("r"), help="Jira credentials file")
-def fetch(project: str, file_out, credentials: str):
+def fetch(project: str, file_out, credentials: IO[str]):
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
     click.echo("Loading credentials")
