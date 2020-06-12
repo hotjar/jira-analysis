@@ -59,11 +59,17 @@ def jira_descriptions():
             "issuetype": {"name": "Bug"},
             "issuelinks": [
                 {
-                    "inwardIssue": {"key": "KEY-1", "issuetype": {"name": "Bug"}},
+                    "inwardIssue": {
+                        "key": "KEY-1",
+                        "fields": {"issuetype": {"name": "Bug"}},
+                    },
                     "type": {"name": "Caused"},
                 },
                 {
-                    "outwardIssue": {"key": "KEY-5", "issuetype": {"name": "Story"}},
+                    "outwardIssue": {
+                        "key": "KEY-5",
+                        "fields": {"issuetype": {"name": "Story"}},
+                    },
                     "type": {"name": "Blocked"},
                 },
             ],
