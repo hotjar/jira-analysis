@@ -6,7 +6,7 @@ from typing import List
 from jira_analysis.cycle_time.cycle_time import CycleTime, get_cycle_time
 from jira_analysis.cycle_time.issue import Issue
 
-from .base import Axis, Chart, IChart
+from jira_analysis.chart.base import Axis, Chart, IChart
 from .cycle_time.deviation import CycleTimeDeviationPlot
 from .cycle_time.line import AverageCycleTimePlot, RollingAverageCycleTimePlot
 from .cycle_time.scatter import CycleTimeScatterPlot

@@ -9,7 +9,7 @@ from jira_analysis.cycle_time.stats import (
     rolling_average_cycle_time,
     standard_deviations,
 )
-from jira_analysis.cycle_time.chart.base import IChart, Plot
+from jira_analysis.chart.base import IChart, Plot
 
 from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit

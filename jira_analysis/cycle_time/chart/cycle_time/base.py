@@ -4,7 +4,7 @@ from abc import ABCMeta, abstractmethod, abstractproperty
 from bokeh.models.sources import DataSource
 from typing import List, Type
 
-from jira_analysis.cycle_time.chart.base import IChart, Plot
+from jira_analysis.chart.base import IChart, Plot
 from jira_analysis.cycle_time.cycle_time import CycleTime
 
 

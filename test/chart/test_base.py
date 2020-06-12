@@ -2,7 +2,7 @@ import pytest
 
 from unittest import mock
 
-from jira_analysis.cycle_time.chart.base import Axis, Chart
+from jira_analysis.chart.base import Axis, Chart
 
 
 @pytest.fixture
