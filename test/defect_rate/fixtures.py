@@ -1,6 +1,15 @@
 import pytest
+from datetime import date
 
 from jira_analysis.config.config import Config
+from jira_analysis.defect_rate.issue import Defect, Issue
+
+
+@pytest.fixture
+def issue():
+    return Issue(
+        key="PROJ-123", completed=date(2020, 5, 1), defects=[Defect(key="PROJ-444")]
+    )
 
 
 @pytest.fixture
