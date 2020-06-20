@@ -1,4 +1,6 @@
 from bokeh.models.sources import ColumnDataSource
+from bokeh.transform import cumsum
+from functools import partial
 from typing import List
 
 from jira_analysis.chart.base import Axis, IChart, Chart
@@ -12,6 +14,11 @@ def generate_defect_chart(issues: List[Issue], chart_class: IChart = Chart) -> N
         y=Axis(label="", values=None, size=300),
         label="Defects",
     )
-    DefectRateDonut(issues=issues, data_source=ColumnDataSource).draw(chart)
+    DefectRateDonut(
+        issues=issues,
+        data_source=ColumnDataSource,
+        no_defects_transform=partial(cumsum, include_zero=True),
+        defects_transform=cumsum,
+    ).draw(chart)
 
     chart.render()
