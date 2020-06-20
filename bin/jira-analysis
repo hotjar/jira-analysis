@@ -78,8 +78,16 @@ def cycle_time(project, file_in: IO[str], date_start: datetime, config: IO[str])
 @cli.command()
 @click.argument("project", type=str)
 @click.argument("file_in", type=click.File())
+@click.option(
+    "date_start",
+    "-s",
+    type=click.DateTime(),
+    help="Analyse tickets closed on or after this date.",
+)
 @click.option("config", "-c", type=click.File(), help="Config file to use for analysis")
-def defect_rate(project: str, file_in: IO[str], config: IO[str]) -> None:
+def defect_rate(
+    project: str, file_in: IO[str], date_start: datetime, config: IO[str]
+) -> None:
     click.echo("Loading config")
     config_file = analysis_config(project, config)
     click.echo("Loading Jira tickets")
@@ -91,9 +99,18 @@ def defect_rate(project: str, file_in: IO[str], config: IO[str]) -> None:
     jira_tickets = (
         jt for jt in jira_tickets if config_file.is_completed_status(jt.status)
     )
-    issues = [convert_jira_to_defect(jt, config_file) for jt in jira_tickets]
+
+    issues = (convert_jira_to_defect(jt, config_file) for jt in jira_tickets)
+
+    if date_start is not None:
+        issues = (
+            i
+            for i in issues
+            if i.completed is not None and i.completed >= date_start.date()
+        )
+
     click.echo("Building Defect Rate chart")
-    generate_defect_chart(issues)
+    generate_defect_chart(list(issues))
 
 
 if __name__ == "__main__":

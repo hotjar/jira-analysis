@@ -1,16 +1,32 @@
 import attr
 
 from bokeh.models.sources import DataSource
+from bokeh.transform import cumsum
 from math import pi
 from typing import List, Type
 
+from jira_analysis.chart.base import IChart, Plot
 from jira_analysis.defect_rate.issue import Issue
 
 
 @attr.s
-class DefectRateDonut:
+class DefectRateDonut(Plot):
     issues: List[Issue] = attr.ib()
     data_source: Type[DataSource] = attr.ib()
+
+    def draw(self, chart: IChart) -> None:
+        chart.wedge(
+            x=0,
+            y=0,
+            inner_radius=0.65,
+            outer_radius=0.95,
+            start_angle=cumsum("angle", include_zero=True),
+            end_angle=cumsum("angle"),
+            line_color="white",
+            fill_color="color",
+            legend_field="value",
+            source=self.to_data_source(),
+        )
 
     def to_data_source(self):
         num_issues = len(self.issues)

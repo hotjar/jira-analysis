@@ -29,6 +29,10 @@ class IChart(ABC):
     def glyph(self) -> Callable:
         pass
 
+    @abstractproperty
+    def wedge(self) -> Callable:
+        pass
+
 
 class Chart(IChart):
     def __init__(
@@ -68,6 +72,10 @@ class Chart(IChart):
     @property
     def glyph(self) -> Callable:
         return self._figure.add_glyph
+
+    @property
+    def wedge(self) -> Callable:
+        return self._figure.annular_wedge
 
 
 class Plot(ABC):
