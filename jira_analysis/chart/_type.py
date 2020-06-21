@@ -13,4 +13,3 @@ class _Figure:
     x_range: Any = attr.ib()
     yaxis: Any = attr.ib()
     y_range: Any = attr.ib()
-
