@@ -10,7 +10,7 @@ from jira_analysis.defect_rate.issue import Issue
 @attr.s
 class DefectRateDonut(Plot):
     issues: List[Issue] = attr.ib()
-    data_source: Callable[[Dict], Any] = attr.ib()
+    data_source: Callable[[Dict[str, Any]], Any] = attr.ib()
     no_defects_transform: Callable[[str], Any] = attr.ib()
     defects_transform: Callable[[str], Any] = attr.ib()
 
