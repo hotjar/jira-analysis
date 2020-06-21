@@ -12,9 +12,10 @@ def generate_defect_chart(
     issues: List[Issue], chart_class: Type[IChart] = Chart
 ) -> None:
     chart = chart_class(
+        label=None,
         x=Axis(label="", values=None, size=600),
         y=Axis(label="", values=None, size=300),
-        label="Defects",
+        tooltips="@value: @defect_rate{0.1f}%",
     )
     DefectRateDonut(
         issues=issues,

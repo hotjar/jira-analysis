@@ -58,6 +58,11 @@ def generate_control_chart(
         ),
         y=Axis(label="Cycle time (days)", values=None, size=900),
         label="Ticket",
+        tooltips=[
+            ("Ticket", "@label"),
+            ("Closed (date)", "@x"),
+            ("Cycle time (days)", "@y"),
+        ],
     )
     cycle_time_plot.draw(chart)
     average_cycle_time_plot.draw(chart)

@@ -25,8 +25,8 @@ def defect_rate_donut(issue):
 def test_to_data_source(defect_rate_donut):
     assert defect_rate_donut.to_data_source() == {
         "issues": [2, 1],
-        "defect_rate": [0.5, 0.5],
-        "value": ["Issues", "Defect Rate"],
+        "defect_rate": [50, 50],
+        "value": ["Closed", "Defects"],
         "angle": [0.5 * pi, 0.5 * pi],
         "color": ["green", "red"],
     }

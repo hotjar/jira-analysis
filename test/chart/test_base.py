@@ -16,6 +16,7 @@ def chart_constructor():
             label="Test",
             create_chart=create_chart,
             render=render,
+            tooltips="Tooltip",
         ),
         create_chart,
         render,
@@ -29,7 +30,7 @@ def test_chart_construct(chart_constructor):
         plot_height=800,
         x_range=[1, 2, 3],
         y_range=[1, 2, 6],
-        tooltips=[("Test", "@label"), ("X", "@x"), ("Y", "@y")],
+        tooltips="Tooltip",
     )
     assert create_chart.return_value.xaxis.axis_label == "X"
     assert create_chart.return_value.xaxis.major_label_orientation == "vertical"

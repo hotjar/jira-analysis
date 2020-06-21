@@ -36,8 +36,8 @@ class DefectRateDonut(Plot):
         return self.data_source(
             {
                 "issues": [num_issues, issues_with_defects],
-                "defect_rate": [no_defect_rate, defect_rate],
-                "value": ["Issues", "Defect Rate"],
+                "defect_rate": [no_defect_rate * 100, defect_rate * 100],
+                "value": ["Closed", "Defects"],
                 "angle": [_get_angle(no_defect_rate), _get_angle(defect_rate)],
                 "color": ["green", "red"],
             }

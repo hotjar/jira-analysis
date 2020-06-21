@@ -45,6 +45,7 @@ class Chart(IChart):
         x: Axis,
         y: Axis,
         label: str,
+        tooltips: Any,
         create_chart: Callable[..., Any] = figure,
         render: Callable[[Any], None] = show,
     ):
@@ -57,11 +58,7 @@ class Chart(IChart):
                 plot_height=self._y.size,
                 x_range=self._x.values,
                 y_range=self._y.values,
-                tooltips=[
-                    (label, "@label"),
-                    (self._x.label, "@x"),
-                    (self._y.label, "@y"),
-                ],
+                tooltips=tooltips,
             ),
         )
         self._figure.xaxis.axis_label = self._x.label
