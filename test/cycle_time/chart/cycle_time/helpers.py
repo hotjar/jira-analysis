@@ -26,6 +26,10 @@ class _MockChart(IChart):
     def glyph(self):
         return self._glyph
 
+    @property
+    def wedge(self):
+        raise AssertionError("Not implemented")
+
 
 @pytest.fixture
 def chart():
