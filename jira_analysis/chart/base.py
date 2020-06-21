@@ -13,6 +13,9 @@ class Axis:
 
 
 class IChart(ABC):
+    def __init__(self, *args, **kwargs):
+        pass
+
     @abstractmethod
     def render(self) -> None:
         pass

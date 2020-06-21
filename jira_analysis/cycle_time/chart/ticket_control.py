@@ -1,7 +1,7 @@
 from arrow import Arrow
 from bokeh.models.sources import ColumnDataSource
 from operator import attrgetter
-from typing import List
+from typing import List, Type
 
 from jira_analysis.cycle_time.cycle_time import CycleTime, get_cycle_time
 from jira_analysis.cycle_time.issue import Issue
@@ -12,7 +12,9 @@ from .cycle_time.line import AverageCycleTimePlot, RollingAverageCycleTimePlot
 from .cycle_time.scatter import CycleTimeScatterPlot
 
 
-def generate_control_chart(tickets: List[Issue], chart_class: IChart = Chart) -> None:
+def generate_control_chart(
+    tickets: List[Issue], chart_class: Type[IChart] = Chart
+) -> None:
     completed_cycle_times: List[CycleTime] = list(
         sorted(
             (
