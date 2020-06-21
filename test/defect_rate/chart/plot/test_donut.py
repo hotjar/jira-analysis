@@ -48,4 +48,3 @@ def test_draw(chart, defect_rate_donut):
     )
     defect_rate_donut.no_defects_transform.assert_called_once_with("angle")
     defect_rate_donut.defects_transform.assert_called_once_with("angle")
-

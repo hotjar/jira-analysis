@@ -1,7 +1,7 @@
 import attr
 
 from math import pi
-from typing import Any, Callable, Dict, List, Type
+from typing import Any, Callable, Dict, List
 
 from jira_analysis.chart.base import IChart, Plot
 from jira_analysis.defect_rate.issue import Issue

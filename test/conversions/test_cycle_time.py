@@ -9,7 +9,6 @@ from jira_analysis.jira.issue import JiraTicket, StatusChange
 from .fixtures import config
 
 
-
 @pytest.fixture
 def jira_ticket():
     return JiraTicket(

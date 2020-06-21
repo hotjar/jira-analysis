@@ -1,6 +1,6 @@
 import pytest
 
-from datetime import datetime, date
+from datetime import date
 from jira_analysis.defect_rate.issue import (
     Defect,
     Issue,
