@@ -74,6 +74,10 @@ analysis.
 
 ![Example Control Chart for Q2 2020 showing individual cycle times, average cycle time, rolling average cycle time and standard deviation](./doc/example_control_chart.png)
 
+#### Defect rate chart
+
+![Example Defect Rate Chart for Q2 2020 showing the percentage of issues closed that subsequently had defects vs the remainder](./doc/example_defect_rate_chart.png)
+
 ## Why?
 
 Jira is ridiculously customisable, to the point where it doesn't always easily support the reporting that you need in
