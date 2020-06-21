@@ -13,7 +13,7 @@ from test.defect_rate.chart.fixtures import chart
 @pytest.fixture
 def defect_rate_donut(issue):
     fake_data_source = Mock()
-    fake_data_source.return_value = lambda x: x
+    fake_data_source.side_effect = lambda x: x
     return DefectRateDonut(
         issues=[issue, Issue(key="PROJ-121", completed=date(2020, 3, 30), defects=[])],
         data_source=fake_data_source,
