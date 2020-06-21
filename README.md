@@ -61,8 +61,11 @@ jira-analysis fetch <PROJECT_KEY> <PROJECT_KEY>.json -c credentials.yaml
 
 Once this is done, you can analyse the tickets:
 
-```
-jira-analysis analyse <PROJECT_KEY> <PROJECT_KEY>.json -c config.yaml
+```bash
+# Build a cycle time chart
+jira-analysis cycle-time <PROJECT_KEY> <PROJECT_KEY>.json -c config.yaml
+# Build a defect rate plot
+jira-analysis defect-rate <PROJECT_KEY> <PROJECT_KEY>.json -c config.yaml
 ```
 
 Note the `-c` argument that points to the `credentials.yaml` file you created for Jira and the `config.yaml` file for
@@ -73,6 +76,10 @@ analysis.
 #### Control chart
 
 ![Example Control Chart for Q2 2020 showing individual cycle times, average cycle time, rolling average cycle time and standard deviation](./doc/example_control_chart.png)
+
+#### Defect rate chart
+
+![Example Defect Rate Chart for Q2 2020 showing the percentage of issues closed that subsequently had defects vs the remainder](./doc/example_defect_rate_chart.png)
 
 ## Why?
 

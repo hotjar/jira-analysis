@@ -2,20 +2,11 @@ import pytest
 
 from datetime import datetime
 
-from jira_analysis.cycle_time.config import Config
 from jira_analysis.cycle_time.issue import Issue
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.jira.issue import JiraTicket, StatusChange
 
-
-@pytest.fixture
-def config():
-    return Config(
-        project="PROJ",
-        completed={"Done"},
-        in_progress={"In progress"},
-        analyse_issue_types=None,
-    )
+from .fixtures import config
 
 
 @pytest.fixture

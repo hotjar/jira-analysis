@@ -2,7 +2,7 @@ import pytest
 
 from io import StringIO
 
-from jira_analysis.cycle_time.config import Config, get_config
+from jira_analysis.config.config import Config, get_config
 
 
 @pytest.fixture
@@ -12,6 +12,7 @@ def config():
         completed={"Done"},
         in_progress={"In progress", "Review"},
         analyse_issue_types=None,
+        defect_types={"Bug"},
     )
 
 
@@ -38,6 +39,7 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 completed={"Done"},
                 in_progress={"In progress", "Review"},
                 analyse_issue_types=None,
+                defect_types={"Bug"},
             ),
             "Bug",
             True,
@@ -48,6 +50,7 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 completed={"Done"},
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Task"},
+                defect_types={"Bug"},
             ),
             "Story",
             True,
@@ -58,16 +61,22 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 completed={"Done"},
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Task"},
+                defect_types={"Bug"},
             ),
             "Bug",
             False,
         ),
     ],
 )
-def test_should_be_analysed(
-    test_config: Config, test_input: str, expected_result: bool
-):
+def test_should_be_analysed(test_config, test_input, expected_result):
     assert test_config.should_be_analysed(test_input) == expected_result
+
+
+@pytest.mark.parametrize(
+    "test_input,expected_output", [("Bug", True), ("Story", False)]
+)
+def test_is_defect_type(test_input, expected_output, config):
+    assert config.is_defect_type(test_input) == expected_output
 
 
 @pytest.mark.parametrize(
@@ -79,6 +88,7 @@ def test_should_be_analysed(
                 completed={"Done"},
                 in_progress={"In progress", "Review"},
                 analyse_issue_types=None,
+                defect_types={"Bug"},
             ),
             StringIO(
                 """projects:
@@ -89,6 +99,8 @@ def test_should_be_analysed(
       - Review
     completed:
       - Done
+    defect_types:
+      - Bug
 """
             ),
         ),
@@ -98,6 +110,7 @@ def test_should_be_analysed(
                 completed={"Done"},
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Bug"},
+                defect_types={"Bug"},
             ),
             StringIO(
                 """projects:
@@ -110,6 +123,8 @@ def test_should_be_analysed(
       - Done
     analyse_issue_types:
         - Story
+        - Bug
+    defect_types:
         - Bug
 """
             ),

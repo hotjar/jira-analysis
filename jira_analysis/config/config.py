@@ -10,6 +10,7 @@ class Config:
     completed: Set[str] = attr.ib()
     in_progress: Set[str] = attr.ib()
     analyse_issue_types: Optional[Set[str]] = attr.ib()
+    defect_types: Set[str] = attr.ib()
 
     def is_completed_status(self, status: str) -> bool:
         return status in self.completed
@@ -30,6 +31,14 @@ class Config:
             issue_type in self.analyse_issue_types if self.analyse_issue_types else True
         )
 
+    def is_defect_type(self, issue_type: str) -> bool:
+        """Return whether the given issue type is a defined defect type.
+
+        :param issue_type: The issue type to check.
+    :return: Whether the given issue type is a defined defect type.
+        """
+        return issue_type in self.defect_types
+
 
 def get_config(project_key: str, config_file: IO[str]) -> Config:
     config = safe_load(config_file)
@@ -41,4 +50,5 @@ def get_config(project_key: str, config_file: IO[str]) -> Config:
         completed=set(project["completed"]),
         in_progress=set(project["in_progress"]),
         analyse_issue_types=set(analyse_issue_types) if analyse_issue_types else None,
+        defect_types=set(project["defect_types"]),
     )

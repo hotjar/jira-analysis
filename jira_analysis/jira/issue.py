@@ -64,10 +64,11 @@ def parse_jira_ticket(ticket_dict: Dict[str, Any]) -> JiraTicket:
             issue = item["outwardIssue"]
         else:
             continue
+
         related_issues.append(
             LinkedTicket(
                 key=issue["key"],
-                issue_type=issue["issuetype"]["name"],
+                issue_type=issue["fields"]["issuetype"]["name"],
                 link_type=item["type"]["name"],
                 link_direction=direction,
             )
