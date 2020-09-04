@@ -4,7 +4,7 @@ import attr
 import click
 import json
 from datetime import datetime
-from typing import IO
+from typing import IO, Iterable, Optional
 
 from jira_analysis.config.config import get_config as analysis_config
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
@@ -18,7 +18,7 @@ from jira_analysis.jira.network import get_issues, get_project
 
 
 @click.group()
-def cli():
+def cli() -> None:
     click.echo("Starting")
 
 
@@ -26,7 +26,7 @@ def cli():
 @click.argument("project", type=str)
 @click.argument("file_out", type=click.File("w"))
 @click.option("credentials", "-c", type=click.File("r"), help="Jira credentials file")
-def fetch(project: str, file_out: IO[str], credentials: IO[str]):
+def fetch(project: str, file_out: IO[str], credentials: IO[str]) -> None:
     """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
     """
     click.echo("Loading credentials")
@@ -47,9 +47,18 @@ def fetch(project: str, file_out: IO[str], credentials: IO[str]):
     help="Analyse tickets closed on or after this date.",
 )
 @click.option(
+    "exclude", "-e", type=str, required=False, multiple=True, help="Exclude ticket IDs."
+)
+@click.option(
     "config", "-c", type=click.File(), help="Config file to use for analysis."
 )
-def cycle_time(project, file_in: IO[str], date_start: datetime, config: IO[str]):
+def cycle_time(
+    project: str,
+    file_in: IO[str],
+    date_start: Optional[datetime],
+    exclude: Iterable[str],
+    config: IO[str],
+) -> None:
     """Analyse pre-fetched tickets from the given file_in.
 
     PROJECT The Project Key to analyse - this is used to define the ticket status and other rules.
@@ -71,6 +80,9 @@ def cycle_time(project, file_in: IO[str], date_start: datetime, config: IO[str])
             for i in issues
             if i.completed is not None and i.completed.date() >= date_start.date()
         )
+    if exclude:
+        exclude_ids = set(exclude)
+        issues = (i for i in issues if i.key not in exclude_ids)
     click.echo("Building Cycle Time chart")
     generate_control_chart(list(issues))
 
