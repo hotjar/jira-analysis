@@ -43,6 +43,8 @@ projects:
       - Story
       - Bug
       - Experiment
+    exclude_issues:
+      - PROJECT_KEY-123
 ```
 
 You can configure multiple projects with different settings for In Progress and Completed. Simple add items to the list.
@@ -50,6 +52,9 @@ You can configure multiple projects with different settings for In Progress and 
 The `analyse_issue_types` config is optional: use it to set issue types that have fixed or deliberately short times e.g.
 toil (that should take less than a day) or spikes (that are fixed lengths of time). This avoids messing up your cycle
 time charts.
+
+The `exclude_issues` option sets the issues to ignore for analysis globally. This is handy for cases where your Jira
+stories haven't been maintained cleanly e.g. started then stopped work, then started again later.
 
 ## Running
 
