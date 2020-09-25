@@ -71,7 +71,10 @@ def cycle_time(
     data = json.load(file_in)
     jira_tickets = (parse_jira_ticket_from_json(t) for t in data)
     jira_tickets = (
-        jt for jt in jira_tickets if config_file.should_be_analysed(jt.issue_type)
+        jt
+        for jt in jira_tickets
+        if config_file.should_be_analysed(jt.issue_type)
+        and jt.key not in config_file.exclude_issues
     )
     issues = (convert_jira_to_cycle_time(config_file, j) for j in jira_tickets)
     if date_start is not None:
