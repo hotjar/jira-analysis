@@ -11,4 +11,5 @@ def config():
         in_progress={"In progress"},
         analyse_issue_types=None,
         defect_types={"Bug"},
+        exclude_issues=set(),
     )

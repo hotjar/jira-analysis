@@ -13,6 +13,7 @@ def config():
         in_progress={"In progress", "Review"},
         analyse_issue_types=None,
         defect_types={"Bug"},
+        exclude_issues=set(),
     )
 
 
@@ -40,6 +41,7 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 in_progress={"In progress", "Review"},
                 analyse_issue_types=None,
                 defect_types={"Bug"},
+                exclude_issues=set(),
             ),
             "Bug",
             True,
@@ -51,6 +53,7 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Task"},
                 defect_types={"Bug"},
+                exclude_issues=set(),
             ),
             "Story",
             True,
@@ -62,6 +65,7 @@ def test_config_is_in_progress_status(test_input, expected_result, config):
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Task"},
                 defect_types={"Bug"},
+                exclude_issues=set(),
             ),
             "Bug",
             False,
@@ -89,9 +93,9 @@ def test_is_defect_type(test_input, expected_output, config):
                 in_progress={"In progress", "Review"},
                 analyse_issue_types=None,
                 defect_types={"Bug"},
+                exclude_issues=set(),
             ),
-            StringIO(
-                """projects:
+            """projects:
   PROJ:
     key: PROJ
     in_progress:
@@ -101,8 +105,7 @@ def test_is_defect_type(test_input, expected_output, config):
       - Done
     defect_types:
       - Bug
-"""
-            ),
+""",
         ),
         (
             Config(
@@ -111,9 +114,9 @@ def test_is_defect_type(test_input, expected_output, config):
                 in_progress={"In progress", "Review"},
                 analyse_issue_types={"Story", "Bug"},
                 defect_types={"Bug"},
+                exclude_issues=set(),
             ),
-            StringIO(
-                """projects:
+            """projects:
   PROJ:
     key: PROJ
     in_progress:
@@ -126,10 +129,36 @@ def test_is_defect_type(test_input, expected_output, config):
         - Bug
     defect_types:
         - Bug
-"""
+""",
+        ),
+        (
+            Config(
+                project="PROJ",
+                completed={"Done"},
+                in_progress={"In progress", "Review"},
+                analyse_issue_types={"Story", "Bug"},
+                defect_types={"Bug"},
+                exclude_issues={"PROJ-123", "PROJ-5"},
             ),
+            """projects:
+  PROJ:
+    key: PROJ
+    in_progress:
+      - In progress
+      - Review
+    completed:
+      - Done
+    analyse_issue_types:
+        - Story
+        - Bug
+    defect_types:
+        - Bug
+    exclude_issues:
+        - PROJ-5
+        - PROJ-123
+""",
         ),
     ],
 )
 def test_get_config(expected, test_input):
-    assert get_config("PROJ", test_input) == expected
+    assert get_config("PROJ", StringIO(test_input)) == expected

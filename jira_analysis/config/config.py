@@ -11,6 +11,7 @@ class Config:
     in_progress: Set[str] = attr.ib()
     analyse_issue_types: Optional[Set[str]] = attr.ib()
     defect_types: Set[str] = attr.ib()
+    exclude_issues: Set[str] = attr.ib()
 
     def is_completed_status(self, status: str) -> bool:
         return status in self.completed
@@ -51,4 +52,5 @@ def get_config(project_key: str, config_file: IO[str]) -> Config:
         in_progress=set(project["in_progress"]),
         analyse_issue_types=set(analyse_issue_types) if analyse_issue_types else None,
         defect_types=set(project["defect_types"]),
+        exclude_issues=set(project.get("exclude_issues", [])),
     )
