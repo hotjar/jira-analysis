@@ -71,3 +71,10 @@ def test_generate_control_chart(issues, chart):
     generate_control_chart(issues, create_chart)
 
     assert render_func.call_count == 1
+
+
+def test_generate_control_chart_with_no_issues(chart):
+    create_chart, render_func = chart
+    generate_control_chart([], create_chart)
+
+    assert not render_func.called
