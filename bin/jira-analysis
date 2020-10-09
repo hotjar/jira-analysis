@@ -2,7 +2,9 @@
 
 import attr
 import click
+import click_spinner
 import json
+
 from datetime import datetime
 from typing import IO, Iterable, Optional
 
@@ -27,8 +29,7 @@ def cli() -> None:
 @click.argument("file_out", type=click.File("w"))
 @click.option("credentials", "-c", type=click.File("r"), help="Jira credentials file")
 def fetch(project: str, file_out: IO[str], credentials: IO[str]) -> None:
-    """Fetch tickets from PROJECT and write them as JSON to FILE_OUT.
-    """
+    """Fetch tickets from PROJECT and write them as JSON to FILE_OUT."""
     click.echo("Loading credentials")
     config = jira_config(credentials)
     click.echo("Downloading Jira tickets")
@@ -129,4 +130,5 @@ def defect_rate(
 
 
 if __name__ == "__main__":
-    cli()
+    with click_spinner.spinner():
+        cli()
