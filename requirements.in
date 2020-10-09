@@ -3,6 +3,7 @@ attrs
 black
 bokeh
 click
+click-spinner
 flake8
 m2r
 mypy
