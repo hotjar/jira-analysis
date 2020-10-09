@@ -15,6 +15,9 @@ from .cycle_time.scatter import CycleTimeScatterPlot
 def generate_control_chart(
     tickets: List[Issue], chart_class: Type[IChart] = Chart
 ) -> None:
+    if not tickets:
+        return
+
     completed_cycle_times: List[CycleTime] = list(
         sorted(
             (
