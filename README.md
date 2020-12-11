@@ -95,6 +95,10 @@ and reports.
 The purpose of this is to work directly with Jira's API, which gives a lot more rich data, allowing us to get the
 reports we want with minimal manual exporting, copying and pasting.
 
+## Documentation
+You can check out the reference documentation [here](https://docs.contour.so/hotjar/jira-analysis/getting-started).
+
+
 ## License
 
 [MIT](./LICENSE)
