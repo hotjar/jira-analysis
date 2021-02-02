@@ -16,7 +16,8 @@ def generate_control_chart(
     tickets: List[Issue], chart_class: Type[IChart] = Chart
 ) -> None:
     if not tickets:
-        print('No data. Check that the JSON file was correctly populated when you ran the `fetch` command.')
+        print('No data. Check that the JSON file was correctly populated ' +
+              'when you ran the `fetch` command.')
         return
 
     completed_cycle_times: List[CycleTime] = list(
@@ -31,7 +32,8 @@ def generate_control_chart(
     )
 
     if not completed_cycle_times:
-        print('Could not process cycle time, check that the statuses in config.yaml are correct.')
+        print('Could not process cycle time, check that the statuses ' +
+              'in config.yaml are correct.')
         return
 
     cycle_time_plot = CycleTimeScatterPlot(
