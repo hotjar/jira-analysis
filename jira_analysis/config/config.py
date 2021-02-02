@@ -51,6 +51,6 @@ def get_config(project_key: str, config_file: IO[str]) -> Config:
         completed=set(project["completed"]),
         in_progress=set(project["in_progress"]),
         analyse_issue_types=set(analyse_issue_types) if analyse_issue_types else None,
-        defect_types=set(project["defect_types"]),
+        defect_types=set(project.get("defect_types", [])),
         exclude_issues=set(project.get("exclude_issues", [])),
     )
