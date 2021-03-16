@@ -11,14 +11,21 @@ from .cycle_time.deviation import CycleTimeDeviationPlot
 from .cycle_time.line import AverageCycleTimePlot, RollingAverageCycleTimePlot
 from .cycle_time.scatter import CycleTimeScatterPlot
 
+from .exceptions import ChartError, NoTicketsProvided
+
 
 def generate_control_chart(
     tickets: List[Issue], chart_class: Type[IChart] = Chart
 ) -> None:
+    """Generate the ticket control chart with the provided list of tickets.
+
+    :param tickets: The list of tickets to generate your control chart from.
+    :param chart_class: The chart class to output into, defaults to Chart.
+    :raises NoTicketsProvided: If len(tickets) == 0.
+    :raises ChartError: On any error attempting to generate a chart.
+    """
     if not tickets:
-        print('No data. Check that the JSON file was correctly populated ' +
-              'when you ran the `fetch` command.')
-        return
+        raise NoTicketsProvided
 
     completed_cycle_times: List[CycleTime] = list(
         sorted(
@@ -32,9 +39,9 @@ def generate_control_chart(
     )
 
     if not completed_cycle_times:
-        print('Could not process cycle time, check that the statuses ' +
-              'in config.yaml are correct.')
-        return
+        raise ChartError(
+            "Could not process cycle time. Check your config.yaml statuses."
+        )
 
     cycle_time_plot = CycleTimeScatterPlot(
         cycle_times=completed_cycle_times, data_source=ColumnDataSource

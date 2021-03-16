@@ -12,6 +12,7 @@ from jira_analysis.config.config import get_config as analysis_config
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.conversions.defect_rate import convert_jira_to_defect
 from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
+from jira_analysis.cycle_time.chart.exceptions import ChartError
 from jira_analysis.defect_rate.chart.defect import generate_defect_chart
 from jira_analysis.file_handlers import json_handler
 from jira_analysis.jira.auth import get_config as jira_config
@@ -88,7 +89,10 @@ def cycle_time(
         exclude_ids = set(exclude)
         issues = (i for i in issues if i.key not in exclude_ids)
     click.echo("Building Cycle Time chart")
-    generate_control_chart(list(issues))
+    try:
+        generate_control_chart(list(issues))
+    except ChartError as e:
+        click.echo(f"Could not generate control chart: {e}")
 
 
 @cli.command()

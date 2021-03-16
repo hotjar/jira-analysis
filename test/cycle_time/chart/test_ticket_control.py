@@ -6,6 +6,7 @@ from unittest import mock
 from jira_analysis.cycle_time.issue import Issue
 from jira_analysis.chart.base import Chart
 from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
+from jira_analysis.cycle_time.chart.exceptions import ChartError, NoTicketsProvided
 
 
 @pytest.fixture
@@ -73,8 +74,28 @@ def test_generate_control_chart(issues, chart):
     assert render_func.call_count == 1
 
 
-def test_generate_control_chart_with_no_issues(chart):
+@pytest.mark.parametrize(
+    "tickets, exception",
+    (
+        pytest.param([], NoTicketsProvided, id="no-tickets"),
+        pytest.param(
+            [
+                Issue(
+                    key="PROJ-4",
+                    created=datetime(2020, 3, 10, 15, 1, 1),
+                    completed=None,
+                    started=None,
+                    status="To Do",
+                )
+            ],
+            ChartError,
+            id="no-completed-issues",
+        ),
+    ),
+)
+def test_generate_control_chart_errors(tickets, exception, chart):
     create_chart, render_func = chart
-    generate_control_chart([], create_chart)
+    with pytest.raises(exception):
+        generate_control_chart(tickets, create_chart)
 
     assert not render_func.called
