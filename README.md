@@ -23,6 +23,7 @@ You need to configure your Jira credentials and project config. This is two file
 jira_credentials:
     email: your_email@example.com
     token: JIRA_TOKEN
+    jira_url: <YOUR_COMPANY>.atlassian.net
 ```
 
 ### `config.yaml`
