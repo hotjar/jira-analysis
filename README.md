@@ -7,9 +7,9 @@ A simple suite of tools that let us report on engineering KPIs out of Jira.
 ```
 git clone git@github.com:hotjar/jira-analysis.git
 python3 -m venv venv
-. venv/bin/activation
-
-python setup.py install
+. venv/bin/activate
+pip install -r requirements.txt
+python setup.py develop
 ```
 
 You need to configure your Jira credentials and project config. This is two files:
@@ -23,6 +23,7 @@ You need to configure your Jira credentials and project config. This is two file
 jira_credentials:
     email: your_email@example.com
     token: JIRA_TOKEN
+    jira_url: <YOUR_COMPANY>.atlassian.net
 ```
 
 ### `config.yaml`
@@ -45,6 +46,8 @@ projects:
       - Experiment
     exclude_issues:
       - PROJECT_KEY-123
+    defect_types:
+      - Bug
 ```
 
 You can configure multiple projects with different settings for In Progress and Completed. Simple add items to the list.
