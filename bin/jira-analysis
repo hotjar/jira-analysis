@@ -11,7 +11,9 @@ from typing import IO, Iterable, Optional
 from jira_analysis.config.config import get_config as analysis_config
 from jira_analysis.conversions.cycle_time import convert_jira_to_cycle_time
 from jira_analysis.conversions.defect_rate import convert_jira_to_defect
+from jira_analysis.conversions.throughput import convert_jira_to_throughput
 from jira_analysis.cycle_time.chart.ticket_control import generate_control_chart
+from jira_analysis.throughput.chart.throughput import generate_throughput_chart
 from jira_analysis.cycle_time.chart.exceptions import ChartError
 from jira_analysis.defect_rate.chart.defect import generate_defect_chart
 from jira_analysis.file_handlers import json_handler
@@ -106,7 +108,7 @@ def cycle_time(
 )
 @click.option("config", "-c", type=click.File(), help="Config file to use for analysis")
 def defect_rate(
-    project: str, file_in: IO[str], date_start: datetime, config: IO[str]
+    project: str, file_in: IO[str], date_start: Optional[datetime], config: IO[str]
 ) -> None:
     click.echo("Loading config")
     config_file = analysis_config(project, config)
@@ -131,6 +133,41 @@ def defect_rate(
 
     click.echo("Building Defect Rate chart")
     generate_defect_chart(list(issues))
+
+
+@cli.command()
+@click.argument("project", type=str)
+@click.argument("file_in", type=click.File())
+@click.option(
+    "date_start",
+    "-s",
+    type=click.DateTime(),
+    help="Analyse tickets closed on or after this date.",
+)
+@click.option("config", "-c", type=click.File(), help="Config file to use for analysis")
+def throughput(
+    project: str, file_in: IO[str], date_start: Optional[datetime], config: IO[str]
+) -> None:
+    """Generate a Throughput Bar Chart to analyse the throughput over time of work."""
+    click.echo("Loading config")
+    config_file = analysis_config(project, config)
+    click.echo("Loading Jira tickets")
+    data = json.load(file_in)
+    jira_tickets = (parse_jira_ticket_from_json(t) for t in data)
+    jira_tickets = (
+        jt for jt in jira_tickets if config_file.should_be_analysed(jt.issue_type)
+    )
+    jira_tickets = (
+        jt for jt in jira_tickets if config_file.is_completed_status(jt.status)
+    )
+
+    issues = (convert_jira_to_throughput(jt, config_file) for jt in jira_tickets)
+
+    if date_start is not None:
+        issues = (i for i in issues if i.completed >= date_start.date())
+
+    click.echo("Building Throughput chart")
+    generate_throughput_chart(list(issues))
 
 
 if __name__ == "__main__":
