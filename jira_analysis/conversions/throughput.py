@@ -3,7 +3,6 @@
 from jira_analysis.jira.issue import JiraTicket
 
 from jira_analysis.config.config import Config
-from jira_analysis.throughput.exceptions import IssueNotComplete
 from jira_analysis.throughput.issue import Issue, create_issue_with_config
 
 
@@ -15,7 +14,6 @@ def convert_jira_to_throughput(jira_ticket: JiraTicket, config: Config) -> Issue
     :return: A Throughput ticket.
     :raises IssueNotComplete: If the given ticket isn't marked as complete.
     """
-    changes = jira_ticket.changelog
     for change in jira_ticket.changelog:
         if config.is_completed_status(change.status_to):
             completed = change.created

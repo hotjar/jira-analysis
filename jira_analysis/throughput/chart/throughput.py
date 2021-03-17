@@ -2,8 +2,6 @@ from collections import OrderedDict
 from datetime import date
 from typing import List, Type
 
-from toolz.itertoolz import pluck
-
 from jira_analysis.chart.base import Axis, IChart, Chart
 
 from jira_analysis.throughput.issue import Issue
