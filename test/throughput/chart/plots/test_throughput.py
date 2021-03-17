@@ -48,9 +48,12 @@ def throughputs():
 @pytest.fixture
 def weeks(throughputs):
     start_week = date(2021, 1, 4)
-    days_in_week = 7
+    DAYS_IN_WEEK = 7
 
-    return [start_week + (i * timedelta(days=7)) for i, _ in enumerate(throughputs)]
+    return [
+        start_week + (i * timedelta(days=DAYS_IN_WEEK))
+        for i, _ in enumerate(throughputs)
+    ]
 
 
 def test_render_throughput_plot(chart, throughputs, weeks):
