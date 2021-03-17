@@ -47,8 +47,8 @@ def generate_throughput_chart(
         ),
         label="Throughput by week",
         tooltips=[
-            ("Week", "@x"),
-            ("Issues Completed", "@y"),
+            ("Week", "@weeks"),
+            ("Issues Completed", "@throughputs"),
         ],
     )
 

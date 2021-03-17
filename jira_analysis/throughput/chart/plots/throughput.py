@@ -22,5 +22,8 @@ class ThroughputPlot(Plot):
 
     def to_data_source(self) -> DataSource:
         return ColumnDataSource(
-            data={"weeks": self.weeks, "throughputs": self.throughputs}
+            data={
+                "weeks": [wc.strftime("%d/%m/%Y") for wc in self.weeks],
+                "throughputs": self.throughputs,
+            }
         )
