@@ -27,6 +27,10 @@ class _MockChart(IChart):
         return self._glyph
 
     @property
+    def vertical_bar(self):
+        raise AssertionError("Not implemented")
+
+    @property
     def wedge(self):
         raise AssertionError("Not implemented")
 

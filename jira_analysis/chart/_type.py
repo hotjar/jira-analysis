@@ -9,6 +9,7 @@ class _Figure:
     line: Callable[..., None] = attr.ib()
     scatter: Callable[..., None] = attr.ib()
     annular_wedge: Callable[..., None] = attr.ib()
+    vbar: Callable[..., None] = attr.ib()
     xaxis: Any = attr.ib()
     x_range: Any = attr.ib()
     yaxis: Any = attr.ib()

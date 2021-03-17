@@ -35,6 +35,10 @@ class IChart(ABC):
         pass
 
     @abstractproperty
+    def vertical_bar(self) -> Callable[..., None]:
+        pass
+
+    @abstractproperty
     def wedge(self) -> Callable[..., None]:
         pass
 
@@ -81,6 +85,10 @@ class Chart(IChart):
     @property
     def glyph(self) -> Callable[..., None]:
         return self._figure.add_glyph
+
+    @property
+    def vertical_bar(self) -> Callable[..., None]:
+        return self._figure.vbar
 
     @property
     def wedge(self) -> Callable[..., None]:
