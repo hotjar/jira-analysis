@@ -19,7 +19,9 @@ class ThroughputPlot(Plot):
 
         :param chart: The chart to draw on.
         """
-        chart.vertical_bar(x="weeks", top="throughputs", source=self.to_data_source())
+        chart.vertical_bar(
+            x="weeks", top="throughputs", source=self.to_data_source(), width=0.9
+        )
 
     def to_data_source(self) -> DataSource:
         return self.data_source(
