@@ -37,13 +37,13 @@ def _get_cycle_times():
 
 @pytest.fixture
 def average_cycle_time_plot():
-    return AverageCycleTimePlot(cycle_times=_get_cycle_times(), data_source=mock.Mock())
+    return AverageCycleTimePlot(data_points=_get_cycle_times(), data_source=mock.Mock())
 
 
 @pytest.fixture
 def rolling_average_cycle_time_plot():
     return RollingAverageCycleTimePlot(
-        cycle_times=_get_cycle_times(), data_source=mock.Mock()
+        data_points=_get_cycle_times(), data_source=mock.Mock()
     )
 
 
