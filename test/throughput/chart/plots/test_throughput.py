@@ -63,7 +63,7 @@ def test_render_throughput_plot(chart, throughputs, weeks):
     throughput_plot.draw(chart)
 
     chart.vertical_bar.assert_called_once_with(
-        x="weeks", top="throughputs", source=throughput_plot.to_data_source()
+        x="weeks", top="throughputs", source=throughput_plot.to_data_source(), width=0.9
     )
 
 

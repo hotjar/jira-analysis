@@ -32,5 +32,9 @@ def create_issue_with_config(
             started = updated
 
     return Issue(
-        key=key, created=created, completed=completed, started=started, status=status,
+        key=key,
+        created=created,
+        completed=completed,
+        started=started,
+        status=status,
     )

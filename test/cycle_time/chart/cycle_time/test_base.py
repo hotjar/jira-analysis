@@ -1,15 +1,19 @@
 import pytest
 
+from dataclasses import dataclass
 from unittest import mock
+from typing import Any, List, Type
 
 from jira_analysis.cycle_time.chart.cycle_time.base import BaseCycleTimeLinePlot
 
 from .helpers import chart
 
 
+@dataclass
 class _ConcreteCycleTimeLinePlot(BaseCycleTimeLinePlot):
-    def __init__(self):
-        super().__init__(cycle_times=[], data_source=mock.Mock())
+
+    cycle_times: List[Any]
+    data_source: Type[Any]
 
     def to_data_source(self):
         return self.data_source()
@@ -29,7 +33,7 @@ class _ConcreteCycleTimeLinePlot(BaseCycleTimeLinePlot):
 
 @pytest.fixture
 def line_plot():
-    return _ConcreteCycleTimeLinePlot()
+    return _ConcreteCycleTimeLinePlot(cycle_times=[], data_source=mock.Mock())
 
 
 def test_draw_calls_data_source(chart, line_plot):

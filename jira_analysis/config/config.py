@@ -36,7 +36,7 @@ class Config:
         """Return whether the given issue type is a defined defect type.
 
         :param issue_type: The issue type to check.
-    :return: Whether the given issue type is a defined defect type.
+        :return: Whether the given issue type is a defined defect type.
         """
         return issue_type in self.defect_types
 

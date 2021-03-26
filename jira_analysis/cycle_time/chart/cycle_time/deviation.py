@@ -1,7 +1,6 @@
-import attr
-
 from bokeh.models import VArea
 from bokeh.models.sources import DataSource
+from dataclasses import dataclass
 from typing import List, Tuple, Type, cast
 
 from jira_analysis.cycle_time.cycle_time import CycleTime
@@ -15,11 +14,11 @@ from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit
 
 
-@attr.s(frozen=True)
+@dataclass(frozen=True)
 class CycleTimeDeviationPlot(Plot):
 
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
+    cycle_times: List[CycleTime]
+    data_source: Type[DataSource]
 
     def draw(self, chart: IChart) -> None:
         sorted_cycle_times = sort_cycle_times(self.cycle_times)
@@ -66,7 +65,8 @@ def _get_standard_deviations(
     rolling_cycle_times = rolling_average_cycle_time(cycle_time_values)
 
     zipped_deviations = zip(
-        rolling_cycle_times, standard_deviations(cycle_time_values),
+        rolling_cycle_times,
+        standard_deviations(cycle_time_values),
     )
     return cast(
         Tuple[Tuple[float, ...], Tuple[float, ...]],
@@ -74,12 +74,12 @@ def _get_standard_deviations(
     )
 
 
-@attr.s(frozen=True)
+@dataclass(frozen=True)
 class _DeviationLinePlot(BaseCycleTimeLinePlot):
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
-    deviation_bound: str = attr.ib()
-    deviations: Tuple[float, ...] = attr.ib()
+    cycle_times: List[CycleTime]
+    data_source: Type[DataSource]
+    deviation_bound: str
+    deviations: Tuple[float, ...]
 
     @property
     def alpha(self) -> float:

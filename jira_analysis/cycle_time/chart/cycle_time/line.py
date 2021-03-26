@@ -1,4 +1,4 @@
-import attr
+from dataclasses import dataclass
 
 from bokeh.models.sources import DataSource
 from numpy import mean
@@ -11,11 +11,11 @@ from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit
 
 
-@attr.s(frozen=True)
+@dataclass(frozen=True)
 class AverageCycleTimePlot(BaseCycleTimeLinePlot):
 
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
+    cycle_times: List[CycleTime]
+    data_source: Type[DataSource]
 
     def to_data_source(self) -> DataSource:
         sorted_cycle_times = sort_cycle_times(self.cycle_times)
@@ -43,11 +43,11 @@ class AverageCycleTimePlot(BaseCycleTimeLinePlot):
         return 1
 
 
-@attr.s(frozen=True)
+@dataclass(frozen=True)
 class RollingAverageCycleTimePlot(BaseCycleTimeLinePlot):
 
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
+    cycle_times: List[CycleTime]
+    data_source: Type[DataSource]
 
     def to_data_source(self) -> DataSource:
         sorted_cycle_times = sort_cycle_times(self.cycle_times)
