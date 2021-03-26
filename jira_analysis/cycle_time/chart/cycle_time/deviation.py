@@ -9,8 +9,8 @@ from jira_analysis.cycle_time.stats import (
     standard_deviations,
 )
 from jira_analysis.chart.base import IChart, Plot
+from jira_analysis.chart.mean import LinePlot
 
-from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit
 
 
@@ -27,13 +27,13 @@ class CycleTimeDeviationPlot(Plot):
 
         data = self.to_data_source()
         upper_plot = _DeviationLinePlot(
-            cycle_times=sorted_cycle_times,
+            data_points=sorted_cycle_times,
             data_source=self.data_source,
             deviation_bound="Upper",
             deviations=upper_deviation,
         )
         lower_plot = _DeviationLinePlot(
-            cycle_times=sorted_cycle_times,
+            data_points=sorted_cycle_times,
             data_source=self.data_source,
             deviation_bound="Lower",
             deviations=lower_deviation,
@@ -75,8 +75,8 @@ def _get_standard_deviations(
 
 
 @dataclass(frozen=True)
-class _DeviationLinePlot(BaseCycleTimeLinePlot):
-    cycle_times: List[CycleTime]
+class _DeviationLinePlot(LinePlot):
+    data_points: List[CycleTime]
     data_source: Type[DataSource]
     deviation_bound: str
     deviations: Tuple[float, ...]
@@ -98,7 +98,7 @@ class _DeviationLinePlot(BaseCycleTimeLinePlot):
         return 1
 
     def to_data_source(self) -> DataSource:
-        sorted_cycle_times = sort_cycle_times(self.cycle_times)
+        sorted_cycle_times = sort_cycle_times(self.data_points)
         _, completions, cycle_times = unsplit(sorted_cycle_times)
 
         return self.data_source(

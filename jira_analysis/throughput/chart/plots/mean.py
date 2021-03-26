@@ -1,32 +1,40 @@
 from bokeh.models.sources import ColumnDataSource, DataSource
-
 from dataclasses import dataclass
 from datetime import date
-from typing import List, Type
+from statistics import mean
+from typing import List, Tuple, Type
+from toolz.sandbox.core import unzip
 
-from jira_analysis.chart.base import IChart, Plot
+from jira_analysis.chart.mean import LinePlot
 
 
 @dataclass(frozen=True)
-class AverageThroughputPlot(Plot):
+class AverageThroughputPlot(LinePlot):
 
-    weeks: List[date]
-    throughputs: List[int]
+    data_points: List[Tuple[date, int]]
     data_source: Type[DataSource] = ColumnDataSource
 
-    def draw(self, chart: IChart) -> None:
-        """Draw the average throughput line onto the plot.
-
-        :param chart: The chart to draw on.
-        """
-        chart.vertical_bar(
-            x="weeks", top="throughputs", source=self.to_data_source(), width=0.9
-        )
-
     def to_data_source(self) -> DataSource:
+        """Convert the data points into a DataSource."""
+        weeks, throughputs = unzip(self.data_points)
+        mean_throughput = mean(throughputs)
+
         return self.data_source(
-            data={
-                "weeks": [wc.strftime("%d/%m/%Y") for wc in self.weeks],
-                "throughputs": self.throughputs,
+            {
+                "x": [wc.strftime("%d/%m/%Y") for wc in sorted(weeks)],
+                "y": [mean_throughput] * len(self.data_points),
+                "label": [self.label] * len(self.data_points),
             }
         )
+
+    @property
+    def label(self) -> str:
+        return "Average throughput (stories / week)"
+
+    @property
+    def color(self) -> str:
+        return "red"
+
+    @property
+    def width(self) -> int:
+        return 1
