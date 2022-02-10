@@ -4,13 +4,14 @@ from collections import OrderedDict
 from datetime import date
 from operator import attrgetter
 from typing import Iterable, List
+from typing_extensions import OrderedDict as OD
 
 from .issue import Issue
 
 
 def group_issues_by_week_commence(
     issues: Iterable[Issue],
-) -> OrderedDict[date, List[Issue]]:
+) -> OD[date, List[Issue]]:
     """Generate a mapping of week commence date -> issue list for the given issues.
 
     This will return _all_ weeks between the first and last issue, ordered by date.
@@ -23,7 +24,7 @@ def group_issues_by_week_commence(
 
     first_monday = _week_commence(sorted_issues[0].completed)
     last_monday = arrow.get(sorted_issues[-1].completed).ceil("week")
-    grouped_issues: OrderedDict[date, List[Issue]] = OrderedDict(
+    grouped_issues: OD[date, List[Issue]] = OrderedDict(
         (wc.date(), []) for wc in arrow.Arrow.range("week", first_monday, last_monday)
     )
     for issue in sorted_issues:
