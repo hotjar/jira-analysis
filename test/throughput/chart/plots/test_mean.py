@@ -1,15 +1,16 @@
 import pytest
 
 from datetime import date, timedelta
+from statistics import mean
 from unittest import mock
 
 from jira_analysis.chart.base import IChart
-from jira_analysis.throughput.chart.plots.throughput import ThroughputPlot
+from jira_analysis.throughput.chart.plots.mean import AverageThroughputPlot
 
 
 class _MockChart(IChart):
     def __init__(self):
-        self._vbar = mock.Mock()
+        self._line = mock.Mock()
 
     def render(self) -> None:
         pass
@@ -20,7 +21,7 @@ class _MockChart(IChart):
 
     @property
     def line(self):
-        raise AssertionError("Not implemented")
+        return self._line
 
     @property
     def glyph(self):
@@ -32,7 +33,7 @@ class _MockChart(IChart):
 
     @property
     def vertical_bar(self):
-        return self._vbar
+        raise AssertionError("Not implemented")
 
 
 @pytest.fixture
@@ -43,6 +44,11 @@ def chart():
 @pytest.fixture
 def throughputs():
     return [1, 2, 4, 1, 4, 2]
+
+
+@pytest.fixture
+def mean_throughput(throughputs):
+    return mean(throughputs)
 
 
 @pytest.fixture
@@ -57,26 +63,33 @@ def weeks(throughputs):
 
 
 def test_render_throughput_plot(chart, throughputs, weeks):
-    throughput_plot = ThroughputPlot(
-        weeks=weeks, throughputs=throughputs, data_source=mock.Mock()
+    throughput_plot = AverageThroughputPlot(
+        data_points=list(zip(weeks, throughputs)), data_source=mock.Mock()
     )
     throughput_plot.draw(chart)
 
-    chart.vertical_bar.assert_called_once_with(
-        x="weeks", top="throughputs", source=throughput_plot.to_data_source(), width=0.9
+    chart.line.assert_called_once_with(
+        "x",
+        "y",
+        source=throughput_plot.to_data_source(),
+        line_width=throughput_plot.width,
+        name=throughput_plot.label,
+        color=throughput_plot.color,
+        alpha=throughput_plot.alpha,
     )
 
 
-def test_throughput_plot_to_data_source(throughputs, weeks):
-    throughput_plot = ThroughputPlot(
-        weeks=weeks, throughputs=throughputs, data_source=mock.Mock()
+def test_throughput_plot_to_data_source(throughputs, weeks, mean_throughput):
+    throughput_plot = AverageThroughputPlot(
+        data_points=list(zip(weeks, throughputs)), data_source=mock.Mock()
     )
 
     throughput_plot.to_data_source()
 
     throughput_plot.data_source.assert_called_once_with(
-        data={
-            "weeks": [w.strftime("%d/%m/%Y") for w in weeks],
-            "throughputs": throughputs,
+        {
+            "x": [w.strftime("%d/%m/%Y") for w in weeks],
+            "y": [mean_throughput] * len(throughputs),
+            'label': [throughput_plot.label] * len(throughputs)
         }
     )

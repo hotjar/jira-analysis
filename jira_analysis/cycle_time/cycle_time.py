@@ -31,8 +31,7 @@ def get_cycle_time(issue: Issue) -> CycleTime:
 
 
 class IssueNotComplete(Exception):
-    """The given ticket is not complete.
-    """
+    """The given ticket is not complete."""
 
     def __init__(self, issue: Issue):
         self.issue = issue

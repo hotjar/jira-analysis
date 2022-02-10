@@ -1,24 +1,24 @@
-import attr
+from dataclasses import dataclass
 
 from bokeh.models.sources import DataSource
 from numpy import mean
 from typing import List, Type
 
+from jira_analysis.chart.mean import LinePlot
 from jira_analysis.cycle_time.cycle_time import CycleTime
 from jira_analysis.cycle_time.stats import rolling_average_cycle_time
 
-from .base import BaseCycleTimeLinePlot
 from .utils import sort_cycle_times, unsplit
 
 
-@attr.s(frozen=True)
-class AverageCycleTimePlot(BaseCycleTimeLinePlot):
+@dataclass(frozen=True)
+class AverageCycleTimePlot(LinePlot):
 
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
+    data_points: List[CycleTime]
+    data_source: Type[DataSource]
 
     def to_data_source(self) -> DataSource:
-        sorted_cycle_times = sort_cycle_times(self.cycle_times)
+        sorted_cycle_times = sort_cycle_times(self.data_points)
         _, completions, cycle_times = unsplit(sorted_cycle_times)
         mean_cycle_time = mean(cycle_times)
 
@@ -43,14 +43,14 @@ class AverageCycleTimePlot(BaseCycleTimeLinePlot):
         return 1
 
 
-@attr.s(frozen=True)
-class RollingAverageCycleTimePlot(BaseCycleTimeLinePlot):
+@dataclass(frozen=True)
+class RollingAverageCycleTimePlot(LinePlot):
 
-    cycle_times: List[CycleTime] = attr.ib()
-    data_source: Type[DataSource] = attr.ib()
+    data_points: List[CycleTime]
+    data_source: Type[DataSource]
 
     def to_data_source(self) -> DataSource:
-        sorted_cycle_times = sort_cycle_times(self.cycle_times)
+        sorted_cycle_times = sort_cycle_times(self.data_points)
         _, completions, cycle_times = unsplit(sorted_cycle_times)
 
         return self.data_source(

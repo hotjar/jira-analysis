@@ -9,6 +9,7 @@ from jira_analysis.throughput.stats import group_issues_by_week_commence
 
 from .exceptions import NoTicketsProvided
 from .plots.throughput import ThroughputPlot
+from .plots.mean import AverageThroughputPlot
 
 
 def generate_throughput_chart(
@@ -32,6 +33,11 @@ def generate_throughput_chart(
         weeks=list(throughputs.keys()), throughputs=list(throughputs.values())
     )
 
+    data_for_throughput_chart = list(throughputs.items())
+    average_throughput = AverageThroughputPlot(
+        data_points=list(data_for_throughput_chart)
+    )
+
     chart = chart_class(
         x=Axis(
             label="Week Start",
@@ -51,5 +57,6 @@ def generate_throughput_chart(
     )
 
     throughput_plot.draw(chart)
+    average_throughput.draw(chart)
 
     chart.render()

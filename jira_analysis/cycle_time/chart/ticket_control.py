@@ -48,10 +48,10 @@ def generate_control_chart(
         cycle_times=completed_cycle_times, data_source=ColumnDataSource
     )
     average_cycle_time_plot = AverageCycleTimePlot(
-        cycle_times=completed_cycle_times, data_source=ColumnDataSource
+        data_points=completed_cycle_times, data_source=ColumnDataSource
     )
     rolling_cycle_time_plot = RollingAverageCycleTimePlot(
-        cycle_times=completed_cycle_times, data_source=ColumnDataSource
+        data_points=completed_cycle_times, data_source=ColumnDataSource
     )
     cycle_time_deviation_plot = CycleTimeDeviationPlot(
         cycle_times=completed_cycle_times, data_source=ColumnDataSource
