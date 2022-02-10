@@ -26,7 +26,7 @@ jobs:
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
     - name: Install MyPy types
       run: |
-        if [ -f requirements_mypy.txt ]; then pip install -r requirements_mypy.txtl fi
+        if [ -f requirements_mypy.txt ]; then pip install -r requirements_mypy.txt; fi
     - name: Lint with flake8
       run: |
         # stop the build if there are Python syntax errors or undefined names
