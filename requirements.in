@@ -6,6 +6,7 @@ click
 click-spinner
 flake8
 m2r
+mistune<2.0.0
 mypy
 numpy
 pip-tools
