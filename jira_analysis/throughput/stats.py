@@ -2,9 +2,8 @@ import arrow
 
 from collections import OrderedDict
 from datetime import date
-from itertools import groupby
 from operator import attrgetter
-from typing import Iterable, List, cast
+from typing import Iterable, List
 
 from .issue import Issue
 
