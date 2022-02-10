@@ -40,7 +40,8 @@ def generate_control_chart(
 
     if not completed_cycle_times:
         raise ChartError(
-            "Could not process cycle time. Check your config.yaml statuses."
+            f"Could not process cycle time. Check your config.yaml statuses. "
+            f"{len(tickets)} tickets provided but none marked complete."
         )
 
     cycle_time_plot = CycleTimeScatterPlot(
