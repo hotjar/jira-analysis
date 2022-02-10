@@ -1,0 +1,4 @@
+mypy
+types-pyYAML
+types-python-dateutil
+types-requests

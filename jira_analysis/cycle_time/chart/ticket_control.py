@@ -40,7 +40,8 @@ def generate_control_chart(
 
     if not completed_cycle_times:
         raise ChartError(
-            "Could not process cycle time. Check your config.yaml statuses."
+            f"Could not process cycle time. Check your config.yaml statuses. "
+            f"{len(tickets)} tickets provided but none marked complete."
         )
 
     cycle_time_plot = CycleTimeScatterPlot(
@@ -68,8 +69,8 @@ def generate_control_chart(
                 d[0].date().isoformat()
                 for d in Arrow.span_range(
                     "day",
-                    Arrow(start_date.year, start_date.month, start_date.day),
-                    Arrow(end_date.year, end_date.month, end_date.day),
+                    Arrow(start_date.year, start_date.month, start_date.day).datetime,
+                    Arrow(end_date.year, end_date.month, end_date.day).datetime,
                 )
             ],
             size=1800,
