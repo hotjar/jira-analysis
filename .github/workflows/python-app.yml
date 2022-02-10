@@ -33,7 +33,7 @@ jobs:
         flake8 test/ --count --show-source --extend-ignore=F811,F401
     - name: Validate with mypy
       run: |
-        mypy --strict jira_analysis/*
+        mypy --install-types --strict jira_analysis/*
     - name: Test with pytest
       run: |
         pytest test/
