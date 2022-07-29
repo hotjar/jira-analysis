@@ -55,7 +55,7 @@ mccabe==0.6.1
     # via
     #   flake8
     #   pylint
-mistune==0.8.4
+mistune==2.0.3
     # via
     #   -r requirements.in
     #   m2r
@@ -138,11 +138,8 @@ tornado==6.1
     # via bokeh
 typing-extensions==4.0.1
     # via
-    #   astroid
-    #   black
     #   bokeh
     #   mypy
-    #   pylint
 urllib3==1.26.8
     # via requests
 validators==0.18.2
