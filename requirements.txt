@@ -138,16 +138,13 @@ tornado==6.1
     # via bokeh
 typing-extensions==4.0.1
     # via
-    #   astroid
-    #   black
     #   bokeh
     #   mypy
-    #   pylint
 urllib3==1.26.8
     # via requests
 validators==0.18.2
     # via -r requirements.in
-wheel==0.37.1
+wheel==0.38.1
     # via pip-tools
 wrapt==1.13.3
     # via astroid
